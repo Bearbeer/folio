@@ -1,0 +1,38 @@
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore all logfiles and tempfiles.
+/log/*
+!/log/.keep
+/tmp
+/tmp-2
+
+/config/*.yml
+!/config/env_public.yml
+
+.idea
+Gemfile.lock
+dump.rdb
+client_secrets.json
+
+/public/uploads
+/public/assets
+
+# Ignore remote rubocop files
+.rubocop-http*yml
+launch.json
+.yardoc
+tags
+
+vendor/*
