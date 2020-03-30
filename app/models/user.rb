@@ -1,6 +1,8 @@
 require 'bcrypt'
 
 class User < ActiveRecord::Base
+  # deleted_at 기반 소프트 딜리트 기능 이용
+  acts_as_paranoid
 
   self.table_name = :users
 
