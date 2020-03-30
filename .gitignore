@@ -34,5 +34,9 @@ client_secrets.json
 launch.json
 .yardoc
 tags
+.DS_Store
+.generators
+.rakeTasks
+
 
 vendor/*
