@@ -15,5 +15,13 @@ module Folio
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
+
+    config.time_zone = 'Seoul'
+
+    config.autoload_paths += [
+        Rails.root.join('lib'),
+        Rails.root.join('lib', 'validators'),
+        Rails.root.join('app', 'services')
+    ]
   end
 end
