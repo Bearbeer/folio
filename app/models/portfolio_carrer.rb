@@ -1,4 +1,4 @@
-class PortfolioCareer < ActiveRecod::before_save :
+class PortfolioCareer < ActiveRecord::base
     acts_as_paranoid
   
     self.table_name = :portfolio_careers
