@@ -6,9 +6,7 @@ class PortfolioCareer < ActiveRecord::Base
   belongs_to :portfolio
   belongs_to :user
   
-  # name, description, start_date, end_date
-  
-  validates :name, presence: {message : '경력명이 존재하지 않음'}
+  validates :name, presence: {message: '경력명이 존재하지 않음'}
   validate :end_date_after_start_date
   
   private
@@ -18,5 +16,6 @@ class PortfolioCareer < ActiveRecord::Base
     
     if end_date < start_date
       raise '날짜 설정 오류'
+    end
   end 
 end
