@@ -20,8 +20,11 @@ module Folio
 
     config.autoload_paths += [
         Rails.root.join('lib'),
-        Rails.root.join('lib', 'validators'),
         Rails.root.join('app', 'services')
     ]
+
+    config.before_configuration do
+      config_for(:env).each { |key, value| ENV[key.to_s] = value.to_s }
+    end
   end
 end
