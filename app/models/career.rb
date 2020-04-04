@@ -17,5 +17,5 @@ class Career < ActiveRecord::Base
     if end_date < start_date
       raise '날짜 설정 오류'
     end
-  end 
+  end
 end
