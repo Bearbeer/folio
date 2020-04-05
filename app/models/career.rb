@@ -5,8 +5,10 @@ class Career < ActiveRecord::Base
   
   belongs_to :portfolio
   belongs_to :user
-  
-  validates :name, presence: {message: '경력명이 존재하지 않음'}
+
+  validates :name, presence: {message: '경력명이 존재하지 않음'}, length: {maximum: 100}
+  validates :description, length: { maximum: 2000 }
+
   validate :end_date_after_start_date
   
   private
