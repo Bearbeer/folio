@@ -1,42 +1,49 @@
-# 보완이 전혀 이루어지지 않았음. 다음 주 목요일까지는 최대한 정리해보도록 할 것.
-# save가 안되는데 어디서 막혀서 false가 뜨는지 감을 못 잡겠음
-
 class Education < ActiveRecord::Base
-  # deleted_at 기반 소프트 딜리트 기능 이용
   acts_as_paranoid
 
   self.table_name = :portfolio_educations
 
-  #belongs_to :user
-  #belongs_to :portfolio
+  STATUS = %w(재학 휴학 졸업예정 졸업).freeze
+  MAX_NAME_SIZE = 100
 
-  STATUS = {
-    in_school: '재학',
-    graduated: '졸업',
-    candidate: '졸업예정',
-    absence: '휴학'    
-  }.freeze
-
-  validates :status, inclusion: { in: STATUS, message: '학적상태가 존재하지 않음' }
+  belongs_to :user, class_name: 'User'
+  # belongs_to :porfolio, class_name: 'Portfolio'
+  
+  validates :user, presence: { message: '회원이 존재하지 않음' }
+  # validates :portfolio, presence: { message: '포트폴리오가 존재하지 않음' }
   validates :name, presence: { message: '학교명이 존재하지 않음' }
-  validates :start_date, presence: { message: '시작일자가 존재하지 않음' }
+  validates :status, inclusion: { in: STATUS, message: '학적상태가 부적합함' }
+  validates :start_date, presence: { message: '입학일자가 존재하지 않음'}
 
-  validate :validate_date
+  validate :compare_dates, :validate_end_date
+
+  before_save :set_name_below_max_size
 
   private
 
-  # status와 end_date 관계 확인
-  #def validate_end_date
-  #  return unless (status == :graduated) ^ end_date.present?
-
-  #  raise '종료일자 정책 위반'
-  #end
-
-  # start_date < end_date 확인
-  def validate_date
+  # start_date & end_date 비교
+  # end_date가 존재할 경우 start_date < end_date가 정상
+  def compare_dates
     return if !end_date.present? || (start_date < end_date)
 
-    raise '시작일자, 종료일자 재설정'
+    raise '입학일자가 졸업일자보다 먼저여야 함'
+  end
+
+  # status와 end_date의 관계 확인
+  # status가 '졸업'인 경우에만 end_date가 있어야 함
+  def validate_end_date
+    return if (status == '졸업') && end_date.present?
+    return if !(status == '졸업') && !end_date.present?
+
+    raise '학적상태가 졸업이면 졸업일자 필요, 그 외인 경우 졸업일자 불필요'
+  end    
+  
+  # name 글자 수가 최대 크기를 넘어갈 경우 수정
+  def set_name_below_max_size
+    return if name.size <= MAX_NAME_SIZE
+
+    self.name = name.truncate(MAX_NAME_SIZE)
   end
 
 end
+
