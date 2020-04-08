@@ -46,4 +46,3 @@ class Education < ActiveRecord::Base
   end
 
 end
-
