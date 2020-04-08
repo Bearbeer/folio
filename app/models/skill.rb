@@ -22,16 +22,4 @@ class Skill < ActiveRecord::Base
             }
 
   scope :level_order, -> { order(level: :desc ) }
-  
-  class << self
-    # 특정 사용자의 모든 skill 정보
-    def get_skills_of_user(user_id)
-      self.where(user_id).order(portfolio_id: :desc).level_order
-    end
-
-    # 특정 포트폴리오의 모든 skill 정보
-    def get_skills_of_portfolio(portfolio_id)
-      self.where(portfolio_id).level_order
-    end
-  end
 end
