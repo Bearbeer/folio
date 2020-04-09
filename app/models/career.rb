@@ -1,7 +1,7 @@
 class Career < ActiveRecord::Base
   acts_as_paranoid
   
-  self.table_name = :careers
+  self.table_name = :portfolio_careers
   
   belongs_to :portfolio
   belongs_to :user

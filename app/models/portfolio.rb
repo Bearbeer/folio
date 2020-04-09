@@ -20,8 +20,8 @@ class Portfolio < ActiveRecord::Base
   # shareable
   def shared_link
 
-    return false if :public_code == ''
+    return false if public_code == ''
 
-    :public_code
+    public_code
   end
 end
