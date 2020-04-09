@@ -12,7 +12,7 @@ class Portfolio < ActiveRecord::Base
   validates :mobile, length: { maximum: 100 }
   validates :email, length: { maximum: 500 }
 
-  GEN = %w[남자 여자]
+  GEN = %w[남자 여자].freeze
   validates :gender, inclusion: { in: GEN }
   validates :address, length: { maximum: 1000 }
   validates :memo, length: { maximum: 5000 }
