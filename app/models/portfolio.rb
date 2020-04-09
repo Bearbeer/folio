@@ -12,6 +12,7 @@ class Portfolio < ActiveRecord::Base
   # has_many :projects, class_name: 'Project'
 
   STATUS = %w(남자 여자).freeze
+  PUBLIC_CODE_LENGTH = 8
   MAX_TITLE_SIZE = 500
   MAX_NAME_SIZE = 100
   MAX_MOBILE_SIZE = 100
@@ -21,14 +22,18 @@ class Portfolio < ActiveRecord::Base
 
   validates :user, presence: { message: '회원이 존재하지 않음' }
   validates :title, presence: { message: '제목이 존재하지 않음' }
-  validates :gender, inclusion: { in: STATUS, message: '지정된 성별 분류를 따르지 않음' }
-  validates :public_code, { maximum: 10, message: '공유 링크 주소가 10글자를 초과'},
-            uniqueness: { message: '중복된 공유 링크 주소'}, 
+  validates :gender, inclusion: { in: STATUS, message: '지정된 성별 분류를 따르지 않음' }, 
+            allow_nil: true
+  validates :public_code, uniqueness: { message: '중복된 공유 링크 주소'},
+            format: {
+              with: /\A[a-zA-Z0-9]{8}\z/, 
+              message: '공유 링크 형식 위반'
+            },
             allow_blank: true
 
   before_save :set_properties_below_max_size
 
-  scope :with_info, joins(:skills, :educations, :careers) # , :projects)
+  scope :with_info, -> { joins(:skills, :educations, :careers) } # , :projects
   scope :recent, -> { order(created_at: :desc ) }
 
   class << self
