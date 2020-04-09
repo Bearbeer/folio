@@ -23,7 +23,7 @@ module Session
     end
 
     def session_token(user)
-      JWT.encode({ user_id: user.id, exp: 30.days.from_now.to_i }, ENV['SECRET_KY_BASE'])
+      JWT.encode({ user_id: user.id, exp: 30.days.from_now.to_i }, ENV['SECRET_KEY_BASE'])
     end
   end
 end
