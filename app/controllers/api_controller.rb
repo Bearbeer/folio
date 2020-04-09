@@ -1,15 +1,15 @@
 class ApiController < ApplicationController
 
+  rescue_from Exception do |e|
+    internal_server_error(e)
+  end
+
   rescue_from Exceptions::BadRequest, with: :bad_request
   rescue_from Exceptions::Unauthorized, with: :unauthorized
   rescue_from Exceptions::Forbidden, with: :forbidden
   rescue_from Exceptions::NotFound, with: :not_found
   rescue_from Exceptions::TooManyRequest, with: :too_many_requests
   rescue_from ActionController::ParameterMissing, with: :bad_request
-
-  rescue_from Exception do |e|
-    internal_server_error(e)
-  end
 
   def json(**args)
     response.content_type = 'application/json'
