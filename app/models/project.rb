@@ -7,11 +7,11 @@ class Project < ActiveRecord::Base
   MAX_DESCRIPTION_SIZE = 2000
 
   belongs_to :user, class_name: 'User'
-  # belongs_to :portfolio, class_name: 'Portfolio'
+  belongs_to :portfolio, class_name: 'Portfolio'
 
   validates :user, presence: { message: '회원이 존재하지 않음' }
   validates :name, presence: { message: '이름이 존재하지 않음' }
-  # validates :portfolio, presence: { message: '포트폴리오가 존재하지 않음' }
+  validates :portfolio, presence: { message: '포트폴리오가 존재하지 않음' }
 
   before_save :set_name_below_max_size, :set_desc_below_max_size
 
