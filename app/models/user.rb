@@ -1,14 +1,9 @@
-require 'bcrypt'
-
 class User < ActiveRecord::Base
+  has_secure_password
   # deleted_at 기반 소프트 딜리트 기능 이용
   acts_as_paranoid
 
   self.table_name = :users
-
-    # has_many :portfolio
-
-  before_validation :validate_password, :set_password
 
   validates :username, presence: { message: 'ID가 존재하지 않음' },
             uniqueness: { case_sensitive: false, message: 'ID가 중복됨' },
@@ -16,17 +11,15 @@ class User < ActiveRecord::Base
                 :with => /\A[a-z]+[a-z0-9]{5,11}\z/,
                 :message => 'ID 정책 위반'
             }
-  validates :password, presence: { message: '비밀번호가 존재하지 않음' }
+  validates :password, presence: { message: '비밀번호가 존재하지 않음' },
+            length: { minimum: 8, message: '비밀번호는 8자리 이상이여야 함' }
+  validate :password_with_blank
 
   private
 
-  def validate_password
-    return if password.present? && password.length >= 8 && !password.include?(' ')
+  def password_with_blank
+    return if password.present? && !password.include?(' ')
 
-    raise '비밀번호 정책 위반'
-  end
-
-  def set_password
-    self.password = BCrypt::Password.create(password, cost: 10).to_s
+    errors.add :password, '비밀번호에 공백문자 포함'
   end
 end
