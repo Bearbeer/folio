@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   private
 
   def user_id_in_token?
-    http_token && decoded_token && decoded_token[:user_id].to_i
+    http_token && decoded_token && !decoded_token[:user_id].to_i.zero?
   end
 
   def http_token

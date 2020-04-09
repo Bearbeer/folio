@@ -38,5 +38,7 @@ tags
 .generators
 .rakeTasks
 
+*.sql
+
 
 vendor/*
