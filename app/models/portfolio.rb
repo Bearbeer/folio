@@ -11,7 +11,7 @@ class Portfolio < ActiveRecord::Base
   has_many :educations, class_name: 'Education'
   # has_many :projects, class_name: 'Project'
 
-  STATUS = %w(남자 여자).freeze
+  GENDER = %w(남자 여자).freeze
   PUBLIC_CODE_LENGTH = 8
   MAX_TITLE_SIZE = 500
   MAX_NAME_SIZE = 100
@@ -22,7 +22,7 @@ class Portfolio < ActiveRecord::Base
 
   validates :user, presence: { message: '회원이 존재하지 않음' }
   validates :title, presence: { message: '제목이 존재하지 않음' }
-  validates :gender, inclusion: { in: STATUS, message: '지정된 성별 분류를 따르지 않음' }, 
+  validates :gender, inclusion: { in: GENDER, message: '지정된 성별 분류를 따르지 않음' }, 
             allow_nil: true
   validates :public_code, uniqueness: { message: '중복된 공유 링크 주소'},
             format: {
