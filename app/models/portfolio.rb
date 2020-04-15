@@ -29,4 +29,14 @@ class Portfolio < ActiveRecord::Base
   validates :memo, length: { maximum: MAX_SIZE[:memo], message: "값이 #{MAX_SIZE[:memo]}자를 초과함" }
   validates :gender, inclusion: { in: GENDER, message: '지정된 성별 분류를 따르지 않음' }, allow_nil: true
 
+  public
+
+  def generate_public_code
+    temp_public_code = [*('a'..'z'),*('A'..'Z'),*('0'..'9')].shuffle[0,8].join
+    while Portfolio.find_by(public_code: temp_public_code).present? do
+      temp_public_code = [*('a'..'z'),*('A'..'Z'),*('0'..'9')].shuffle[0,8].join
+    end
+    self.public_code = temp_public_code
+  end
+
 end
