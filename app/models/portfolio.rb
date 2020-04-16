@@ -39,12 +39,11 @@ class Portfolio < ActiveRecord::Base
     code
   end
 
-  def get_public_code(portfolio_id)
-    portfolio = Portfolio.find_by(id: portfolio_id)
-    if portfolio[:public_code] == ''
+  def get_public_code
+    if self[:public_code] == ''
       puts false
     else
-      puts portfolio[:public_code]
+      puts self[:public_code]
     end
   end
 end
