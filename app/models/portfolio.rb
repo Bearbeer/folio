@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class Portfolio < ActiveRecord::Base
   acts_as_paranoid
 
@@ -29,4 +31,10 @@ class Portfolio < ActiveRecord::Base
   validates :memo, length: { maximum: MAX_SIZE[:memo], message: "값이 #{MAX_SIZE[:memo]}자를 초과함" }
   validates :gender, inclusion: { in: GENDER, message: '지정된 성별 분류를 따르지 않음' }, allow_nil: true
 
+
+  def generate_public_code
+    begin
+      code = SecureRandom.alphanumeric(8)
+    end while self.class.exists?(public_code: code)
+  end
 end
