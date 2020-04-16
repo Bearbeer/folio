@@ -13,7 +13,7 @@ module Session
     end
 
     def logout
-
+      JWT.decode(params[:token], ENV['SECRET_KEY_BASE'])
     end
 
     private
