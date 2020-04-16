@@ -35,6 +35,7 @@ class Portfolio < ActiveRecord::Base
   def generate_public_code
     begin
       code = SecureRandom.alphanumeric(8)
-    end while self.class.exists?(public_code: code)
+    end while Portfolio.exists?(public_code: code)
+    code
   end
 end
