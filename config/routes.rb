@@ -9,4 +9,13 @@ Rails.application.routes.draw do
     end
 
   end
+
+  # 회원가입 / 회원탈퇴
+  resources :users, controller: 'user', only: [] do
+    collection do
+      post :register
+      delete :unregister
+    end
+
+  end
 end
