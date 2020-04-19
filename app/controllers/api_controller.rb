@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# API Response 메소드 등 API 공통 로직 관리
 class ApiController < ApplicationController
 
   rescue_from Exception do |e|
