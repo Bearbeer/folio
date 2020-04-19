@@ -9,4 +9,12 @@ Rails.application.routes.draw do
     end
 
   end
+
+
+  resources :users, controller: 'user', only: [] do
+    collection do
+      post :register
+      post :drop_out
+    end
+  end
 end
