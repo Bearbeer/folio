@@ -9,7 +9,9 @@ class SessionController < ApiController
     validate_params
 
     user = User.find_by(username: params[:username].downcase)
-    raise Exceptions::NotFound unless user&.authenticate(params[:password])
+    unless user&.authenticate(params[:password])
+      raise Exceptions::NotFound, '아이디와 비밀번호를 다시 확인하세요.'
+    end
 
     json(code: 200, data: { token: token(user), expires_at: EXPIRES_AT })
   end
