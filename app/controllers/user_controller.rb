@@ -3,6 +3,7 @@
 # 회원가입/탈퇴 기능을 관리하는 컨트롤러
 class UserController < ApiController
   include UserHelper
+  include SessionHelper
 
   before_action :validate_authorization, only: :destroy
 
@@ -12,7 +13,7 @@ class UserController < ApiController
     validate_username
     user = User.create!(username: params[:username], password: params[:password])
 
-    json(code: 200, data: user_view(user))
+    json(data: { user: user_view(user), session: session_view(user) })
   end
 
   # DELETE /users/:id

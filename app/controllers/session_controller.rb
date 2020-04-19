@@ -3,8 +3,7 @@
 # 로그인 기능을 관리하는 컨트롤러
 class SessionController < ApiController
   include UserHelper
-
-  EXPIRES_AT = 1.day.from_now
+  include SessionHelper
 
   # POST /sessions
   def create
@@ -15,7 +14,7 @@ class SessionController < ApiController
       raise Exceptions::NotFound, '아이디와 비밀번호를 다시 확인하세요.'
     end
 
-    json(code: 200, data: session_view(user))
+    json(data: { user: user_view(user), session: session_view(user) })
   end
 
   private
@@ -23,19 +22,5 @@ class SessionController < ApiController
   def validate_params
     params.require(:username)
     params.require(:password)
-  end
-
-  def token(user)
-    JWT.encode({ user_id: user.id, exp: EXPIRES_AT.to_i }, ENV['SECRET_KEY_BASE'])
-  end
-
-  def session_view(user)
-    {
-      user: user_view(user),
-      session: {
-        token: token(user),
-        expires_at: EXPIRES_AT
-      }
-    }
   end
 end

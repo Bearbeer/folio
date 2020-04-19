@@ -1,4 +1,6 @@
-# 회원 뷰 헬퍼
+# frozen_string_literal: true
+
+# 회원 헬퍼
 module UserHelper
   def user_view(user)
     {
