@@ -9,12 +9,9 @@ class ApplicationController < ActionController::Base
   protected
 
   def validate_authorization
-    unless user_id_in_token?
-      render_401_error
-      return false
-    end
+    return if user_id_in_token? && current_user
 
-    @current_user = User.find(decoded_token[:user_id])
+    render_401_error
   rescue JWT::VerificationError, JWT::DecodeError
     render_401_error
   end
@@ -32,6 +29,10 @@ class ApplicationController < ActionController::Base
 
   def decoded_token
     @decoded_token ||= JsonWebToken.decode(http_token)
+  end
+
+  def current_user
+    @current_user ||= User.find_by(id: decoded_token[:user_id])
   end
 
   def render_401_error
