@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resources :users, controller: 'user', only: [] do
     collection do
       post :register
-      post :drop_out
+      delete :drop_out
     end
   end
 end

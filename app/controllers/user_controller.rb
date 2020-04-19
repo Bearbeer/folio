@@ -24,6 +24,7 @@ class UserController < ApiController
 
   def drop_out
     user = User.find_by(username: user_params[:username])
+
     raise Exceptions::NotFound unless user
     user.delete
   end
