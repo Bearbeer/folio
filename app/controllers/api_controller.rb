@@ -14,6 +14,7 @@ class ApiController < ApplicationController
   rescue_from Exceptions::NotFound, with: :not_found
   rescue_from Exceptions::TooManyRequest, with: :too_many_requests
   rescue_from ActionController::ParameterMissing, with: :bad_request
+  rescue_from ActiveRecord::RecordInvalid, with: :conflict
 
   def json(**args)
     response.content_type = 'application/json'
