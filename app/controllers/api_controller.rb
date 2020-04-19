@@ -10,6 +10,7 @@ class ApiController < ApplicationController
   rescue_from Exceptions::BadRequest, with: :bad_request
   rescue_from Exceptions::Unauthorized, with: :unauthorized
   rescue_from Exceptions::Forbidden, with: :forbidden
+  rescue_from Exceptions::Conflict, with: :conflict
   rescue_from Exceptions::NotFound, with: :not_found
   rescue_from Exceptions::TooManyRequest, with: :too_many_requests
   rescue_from ActionController::ParameterMissing, with: :bad_request
@@ -17,35 +18,39 @@ class ApiController < ApplicationController
   def json(**args)
     response.content_type = 'application/json'
     code = args[:code] || 200
-    data = { code: code, data: args[:data], message: message_for_code(code) }.as_json
+    data = { code: code, data: args[:data], message: args[:message] }.as_json
 
     render(json: data, status: code, callback: params[:callback])
   end
 
   protected
 
-  def bad_request
-    json code: 400
+  def bad_request(error)
+    json code: 400, message: error.message
   end
 
-  def unauthorized
-    json code: 401
+  def unauthorized(error)
+    json code: 401, message: error.message
   end
 
-  def forbidden
-    json code: 403
+  def forbidden(error)
+    json code: 403, message: error.message
   end
 
-  def not_found
-    json code: 404
+  def conflict(error)
+    json code: 409, message: error.message
   end
 
-  def too_many_requests
-    json code: 429
+  def not_found(error)
+    json code: 404, message: error.message
   end
 
-  def internal_server_error(e)
-    exception = "#{e.class.name} : #{e.message}"
+  def too_many_requests(error)
+    json code: 429, message: error.message
+  end
+
+  def internal_server_error(error)
+    exception = "#{error.class.name} : #{error.message}"
     json(code: 500, data: { exception: exception })
   end
 
