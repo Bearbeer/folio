@@ -4,18 +4,12 @@ class UserController < ApiController
   #before_action :validate_authorization, only: [:logout]
   #before_action :validate_authorization, only: [:logout]
 
-  def login
-    user = User.find_by(username: user_params[:username].downcase)
-    raise Exceptions::NotFound unless user
-
-    json(code: 200)
-  end
 
   def register
     unless user_params[:username] & user_params[:password]
     end
 
-    user = User.create(username: user_params[:username], password: user_params[:password])
+    user = User.create!(username: user_params[:username], password: user_params[:password])
 
     # 회원가입하면 자동로그인 해주나요?
     json(code: 200, user: user)
@@ -26,6 +20,7 @@ class UserController < ApiController
     user = User.find_by(username: user_params[:username])
 
     raise Exceptions::NotFound unless user
+              
     user.delete
   end
 
