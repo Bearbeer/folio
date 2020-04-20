@@ -6,4 +6,7 @@ Rails.application.routes.draw do
 
   # 회원가입 / 회원탈퇴
   resources :users, controller: 'user', only: %i[create destroy]
+
+  # 스킬 중앙 관리
+  resources :skills, controller: 'skill', only: %i[index show create update destroy]
 end
