@@ -7,6 +7,7 @@ class UserController < ApiController
 
   def register
     unless user_params[:username] & user_params[:password]
+      raise Exceptions::NotFound
     end
 
     user = User.create!(username: user_params[:username], password: user_params[:password])
