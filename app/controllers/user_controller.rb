@@ -17,6 +17,7 @@ class UserController < ApiController
   end
 
   def drop_out
+    # 로그인 확인 필요 param 대신 현재 유저
     user = User.find_by(username: user_params[:username])
 
     raise Exceptions::NotFound unless user
