@@ -8,7 +8,7 @@ class SkillController < ApiController
   def index
     skills = Skill.where(user: current_user)
 
-    json(data: skills_view(skills))
+    json(data: { skills: skills_view(skills) })
   end
 
   # GET /skills/:id
@@ -17,7 +17,7 @@ class SkillController < ApiController
 
     skill = get_skill
     
-    json(data: skill_view(skill))
+    json(data: { skill: skill_view(skill) })
   end
 
   # POST /skills
@@ -26,7 +26,7 @@ class SkillController < ApiController
 
     skill = Skill.create(user: current_user, name: params[:name], level: params[:level])
 
-    json(data: skill_view(skill))
+    json(data: { skill: skill_view(skill) })
   end
   
   # PUT /skills/:id
@@ -36,7 +36,7 @@ class SkillController < ApiController
     skill = get_skill
     skill.update(name: params[:name], level: params[:level])
 
-    json(data: skill_view(skill))
+    json(data: { skill: skill_view(skill) })
   end
 
   # DELETE /skills/:id
@@ -62,9 +62,7 @@ class SkillController < ApiController
 
   # 필수 parameter 검사
   def require_params(prop_list)
-    puts prop_list
     prop_list.each do |prop|
-      puts(prop)
       params.require(prop)
     end
   end
