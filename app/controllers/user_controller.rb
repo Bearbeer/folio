@@ -25,12 +25,7 @@ class UserController < ApiController
     raise Exceptions::NotFound unless user
               
     user.delete
-    json(code:200)
-  end
-
-  private
-  def user_params
-    params.require(:user).permit(:username, :password)
     json(code: 200)
   end
+  
 end
