@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class Portfolio
+  # 포트폴리오 내 프로젝트 모델
   class Project < ActiveRecord::Base
     acts_as_paranoid
 
