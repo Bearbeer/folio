@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   # 회원가입 / 회원탈퇴
   resources :users, controller: 'user', only: %i[create destroy]
 
+  # 중앙 프로젝트 추가/수정/삭제
+  resources :projects, controller: 'project', only: %i[index create update destroy]
+
   # 경력 관리
   resources :careers, controller: 'career', only: %i[index show create update destroy]
 end
