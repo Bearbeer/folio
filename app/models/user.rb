@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
               with: /\A[a-z]+[a-z0-9]\z/,
               message: '은 영문 소문자로 시작하는 영문+숫자 조합이어야 합니다'
             }
-  validates :password, length: { minimum: 8, message: error.invalid(:password) }
+  validates :password, length: { minimum: 8, message: '는 8자리 이상이어야 합니다' }
   validate :password_with_blank
 
   private
