@@ -26,7 +26,7 @@ class Portfolio
 
     before_save :set_name_below_max_size
 
-    scope :level_order, -> { order(level: :desc ) }
+    scope :level_order, -> { order(level: :desc) }
 
     private
 
