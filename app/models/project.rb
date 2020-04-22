@@ -10,7 +10,6 @@ class Project < ActiveRecord::Base
   MAX_DESCRIPTION_SIZE = 2000
 
   belongs_to :user, class_name: 'User'
-  belongs_to :portfolio, class_name: 'Portfolio'
 
   validates :user, presence: { message: '값이 존재하지 않음' }
   validates :name,
@@ -24,5 +23,4 @@ class Project < ActiveRecord::Base
               maximum: MAX_DESCRIPTION_SIZE,
               message: "값이 #{MAX_DESCRIPTION_SIZE}자를 초과함"
             }
-  validates :portfolio, presence: { message: '포트폴리오가 존재하지 않음' }
 end
