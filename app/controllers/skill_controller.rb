@@ -6,7 +6,7 @@ class SkillController < ApiController
 
   # GET /skills
   def index
-    skills = Skill.where(user: current_user)
+    skills = Skill.where(user: current_user).order(updated_at: :desc)
 
     json(data: { skills: skills_view(skills) })
   end
@@ -51,9 +51,8 @@ class SkillController < ApiController
   def skill
     return @skill if @skill
 
-    @skill = Skill.find_by(params[:id])
-    raise Exceptions::NotFound unless skill
-    raise Exceptions::Forbidden if skill.user != current_user
+    @skill = Skill.find_by(id: params[:id], user: current_user)
+    raise Exceptions::NotFound unless @skill
 
     @skill
   end
