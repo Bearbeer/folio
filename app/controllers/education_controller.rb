@@ -6,7 +6,7 @@ class EducationController < ApiController
 
   before_action :validate_authorization
 
-  STATUS = %w[재학 휴학 졸업예정 졸업].freeze
+  STATUS = Education::STATUS
 
   # GET /educations
   def index
@@ -20,7 +20,7 @@ class EducationController < ApiController
     params.rquire(:status)
     params.require(:start_date)
     unless params.key?(:end_date)
-      raise Exceptions::BadRequest. 'end_date 파라미터가 누락되었습니다'
+      raise Exceptions::BadRequest, 'end_date 파라미터가 누락되었습니다'
     end
 
     education = Education.create!(user: current_user, name: params[:name],
@@ -33,9 +33,6 @@ class EducationController < ApiController
   # PUT /educations/:id
   def update
     params.require(:id)
-    
-    education = Education.find_by(id: params[:id], user: current_user)
-    raise Exceptions::NotFound, '학력이 존재하지 않습니다' unless education
 
     if params.key?(:name) && params[:name].blank?
       raise Exceptions::BadRequest, '학교명을 비울 수 없습니다'
@@ -48,6 +45,9 @@ class EducationController < ApiController
     if params.key?(:start_date) && params[:start_date].blank?
       raise Exceptions::BadRequest, '입학일자를 비울 수 없습니다'
     end
+
+    education = Education.find_by(id: params[:id], user: current_user)
+    raise Exceptions::NotFound, '학력이 존재하지 않습니다' unless education
 
     education.name = params[:name] if params.key?(:name)
     education.status = params[:status] if params.key?(:status)
