@@ -8,7 +8,11 @@ class Skill < ActiveRecord::Base
   MAX_NAME_SIZE = 100
 
   validates :user, presence: { message: '회원이 존재하지 않음' }
-  validates :name, presence: { message: '이름이 존재하지 않음' }
+  validates :name, presence: { message: '이름이 존재하지 않음' },
+            length: {
+              maximum: 100,
+              message: '이름이 100자를 초과함'
+            }
   validates :level, presence: { message: '레벨이 존재하지 않음' },
             numericality: { 
               only_integer: true,
@@ -20,11 +24,4 @@ class Skill < ActiveRecord::Base
   before_save :set_name_below_max_size
 
   scope :level_order, -> { order(level: :desc ) }
-
-  private
-
-  def set_name_below_max_size
-    return if name.size <= MAX_NAME_SIZE
-    self.name = name.truncate(MAX_NAME_SIZE)
-  end
 end
