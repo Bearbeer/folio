@@ -41,8 +41,9 @@ class EducationController < ApiController
       raise Exceptions::BadRequest, '학교명을 비울 수 없습니다'
     end
 
-    if params.key?(:status) && params[:status].in?(STATUS)
-      raise Exceptions::BadRequest, '졸업구분을 비울 수 없습니다'  
+    if params.key?(:status) && !params[:status].in?(STATUS)
+      raise Exceptions::BadRequest, '졸업구분을 비울 수 없습니다'
+    end
 
     if params.key?(:start_date) && params[:start_date].blank?
       raise Exceptions::BadRequest, '입학일자를 비울 수 없습니다'
