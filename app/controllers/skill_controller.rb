@@ -1,7 +1,5 @@
 # 스킬을 중앙 관리하는 컨트롤러
 class SkillController < ApiController
-  include SkillHelper
-
   before_action :validate_authorization
 
   # GET /skills
@@ -62,5 +60,24 @@ class SkillController < ApiController
     prop_list.each do |prop|
       params.require(prop)
     end
+  end
+
+  
+  ## View Models ##
+
+  # Skills List
+  def skills_view(skills)
+    skills.map { |skill| skill_view(skill) }
+  end
+
+  # Skill
+  def skill_view(skill)
+    {
+      id: skill.id,
+      name: skill.name,
+      level: skill.level,
+      created_at: skill.created_at,
+      updated_at: skill.updated_at
+    }
   end
 end
