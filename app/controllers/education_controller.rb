@@ -2,8 +2,6 @@
 
 # 회원가입/탈퇴 기능을 관리하는 컨트롤러
 class EducationController < ApiController
-  include EducationHelper
-
   before_action :validate_authorization
 
   STATUS = Education::STATUS
@@ -68,6 +66,23 @@ class EducationController < ApiController
     education.destroy
 
     json(code: 200)
+  end
+
+  private
+
+  def educations_view(educations)
+    educations.map { |education| education_view(education) }
+  end
+
+  def education_view(education)
+    {
+      id: education.id,
+      name: education.name,
+      start_date: education.start_date,
+      end_date: education.end_date,
+      created_at: education.created_at,
+      updated_at: education.updated_at
+    }
   end
 
 end
