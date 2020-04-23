@@ -15,8 +15,6 @@ class SkillController < ApiController
   def show
     params.require(:id)
 
-    skill = get_skill
-    
     json(data: { skill: skill_view(skill) })
   end
 
@@ -24,7 +22,7 @@ class SkillController < ApiController
   def create
     require_params([:name, :level])
 
-    skill = Skill.create(user: current_user, name: params[:name], level: params[:level])
+    skill = Skill.create!(user: current_user, name: params[:name], level: params[:level])
 
     json(data: { skill: skill_view(skill) })
   end
@@ -33,8 +31,7 @@ class SkillController < ApiController
   def update
     require_params([:id, :name, :level])
 
-    skill = get_skill
-    skill.update(name: params[:name], level: params[:level])
+    skill.update!(name: params[:name], level: params[:level])
 
     json(data: { skill: skill_view(skill) })
   end
@@ -43,8 +40,7 @@ class SkillController < ApiController
   def destroy
     params.require(:id)
 
-    skill = get_skill
-    skill.destory
+    skill.destroy
 
     json(code: 200, message: '삭제되었습니다.')
   end
@@ -52,12 +48,14 @@ class SkillController < ApiController
   private
 
   # ID parameter로 skill 반환
-  def get_skill
-    skill = Skill.find_by(params[:id])
+  def skill
+    return @skill if @skill
+
+    @skill = Skill.find_by(params[:id])
     raise Exceptions::NotFound unless skill
     raise Exceptions::Forbidden if skill.user != current_user
 
-    skill
+    @skill
   end
 
   # 필수 parameter 검사
