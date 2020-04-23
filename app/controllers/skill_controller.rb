@@ -9,16 +9,10 @@ class SkillController < ApiController
     json(data: { skills: skills_view(skills) })
   end
 
-  # GET /skills/:id
-  def show
-    params.require(:id)
-
-    json(data: { skill: skill_view(skill) })
-  end
-
   # POST /skills
   def create
-    require_params([:name, :level])
+    params.require(:name)
+    params.require(:level)
 
     skill = Skill.create!(user: current_user, name: params[:name], level: params[:level])
 
@@ -27,9 +21,14 @@ class SkillController < ApiController
   
   # PUT /skills/:id
   def update
-    require_params([:id, :name, :level])
+    params.require(:id)
 
-    skill.update!(name: params[:name], level: params[:level])
+    skill = Skill.find_by(id: params[:id], user: current_user)
+    raise Exceptions::NotFound unless skill
+
+    skill.name = params[:name] if params.key?(:name)
+    skill.level = params[:level] if params.key?(:level)
+    skill.save!
 
     json(data: { skill: skill_view(skill) })
   end
@@ -38,6 +37,9 @@ class SkillController < ApiController
   def destroy
     params.require(:id)
 
+    skill = Skill.find_by(id: params[:id], user: current_user)
+    raise Exceptions::NotFound unless skill
+
     skill.destroy
 
     json(code: 200, message: '삭제되었습니다.')
@@ -45,24 +47,6 @@ class SkillController < ApiController
 
   private
 
-  # ID parameter로 skill 반환
-  def skill
-    return @skill if @skill
-
-    @skill = Skill.find_by(id: params[:id], user: current_user)
-    raise Exceptions::NotFound unless @skill
-
-    @skill
-  end
-
-  # 필수 parameter 검사
-  def require_params(prop_list)
-    prop_list.each do |prop|
-      params.require(prop)
-    end
-  end
-
-  
   ## View Models ##
 
   # Skills List

@@ -21,7 +21,5 @@ class Skill < ActiveRecord::Base
               message: '레벨이 1~5 범위를 벗어남'
             }
             
-  before_save :set_name_below_max_size
-
   scope :level_order, -> { order(level: :desc ) }
 end
