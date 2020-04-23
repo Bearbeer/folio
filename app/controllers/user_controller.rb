@@ -21,7 +21,7 @@ class UserController < ApiController
     validate_user_id
     current_user.destroy
 
-    json(code: 200, message: '회원탈퇴가 완료되었습니다.')
+    json(code: 200, message: '회원탈퇴가 완료되었습니다')
   end
 
   private
@@ -34,13 +34,13 @@ class UserController < ApiController
   def validate_username
     return unless User.exists?(username: params[:username].downcase)
 
-    raise Exceptions::Conflict, '이미 존재하는 아이디입니다.'
+    raise Exceptions::Conflict, '이미 존재하는 아이디입니다'
   end
 
   def validate_user_id
     params.require(:id)
     return if current_user.id.to_i == params[:id].to_i
 
-    raise Exceptions::Forbidden, '권한이 없습니다.'
+    raise Exceptions::Forbidden, '권한이 없습니다'
   end
 end
