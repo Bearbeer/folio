@@ -18,7 +18,7 @@ class CareerController < ApiController
   # POST /careers
   def create
     validate_career_params
-    Career.create!(user_id: current_user.id, name: params[:name], description: params[:description], start_date: params[:start_date], end_date: params[:end_date])
+    career = Career.create!(user_id: current_user.id, name: params[:name], description: params[:description], start_date: params[:start_date], end_date: params[:end_date])
 
     json(code: 200, data: { career: career_view(career) })
   end
