@@ -8,6 +8,14 @@ class User < ActiveRecord::Base
 
   self.table_name = :users
 
+  GENDER = %w[남자 여자].freeze
+  MAX_SIZE = {
+    name: 100,
+    mobile: 100,
+    email: 500,
+    address: 1000
+  }.freeze
+
   validates :username,
             uniqueness: { case_sensitive: false, message: '값이 이미 존재합니다' },
             length: { in: 6..12, message: '는 6자리 이상 12자리 이하이어야 합니다' },
@@ -17,6 +25,11 @@ class User < ActiveRecord::Base
             }
   validates :password, length: { minimum: 8, message: '는 8자리 이상이어야 합니다' }
   validate :password_with_blank
+  validates :gender, inclusion: { in: GENDER, message: '지정된 성별 분류를 따르지 않음' }, allow_nil: true
+  validates :name, length: { maximum: MAX_SIZE[:name], message: "값이 #{MAX_SIZE[:name]}자를 초과함" }
+  validates :mobile, length: { maximum: MAX_SIZE[:mobile], message: "값이 #{MAX_SIZE[:mobile]}자를 초과함" }
+  validates :email, length: { maximum: MAX_SIZE[:email], message: "값이 #{MAX_SIZE[:email]}자를 초과함" }
+  validates :address, length: { maximum: MAX_SIZE[:address], message: "값이 #{MAX_SIZE[:address]}자를 초과함" }
 
   private
 
