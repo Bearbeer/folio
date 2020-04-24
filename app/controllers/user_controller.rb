@@ -7,13 +7,26 @@ class UserController < ApiController
 
   before_action :validate_authorization, only: :destroy
 
+  def index
+    user = Users.find_by(id: current_user.id)
+    json(data: { user: user_view(user)})
+  end
+
   # POST /users
   def create
     validate_create_params
     validate_username
-    user = User.create!(username: params[:username], password: params[:password])
+    user = User.create!(username: params[:username], password: params[:password],
+                        email: params[:email], gender: params[:gender], birthday: params[:birthday], address: params[:address])
 
     json(data: { user: user_view(user), session: session_view(user) })
+  end
+
+  # POST /suers/:id
+  def update
+    validate_create_params
+    user = User.update!(email: params[:email], gender: params[:gender], birthday: params[:birthday], address: params[:address])
+    json(data: { user: user_view(user) })
   end
 
   # DELETE /users/:id
