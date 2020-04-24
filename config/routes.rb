@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   # 중앙 프로젝트 추가/수정/삭제
   resources :projects, controller: 'project', only: %i[index create update destroy]
 
+  # 경력 관리
+  resources :careers, controller: 'career', only: %i[index show create update destroy]
+
   # 중앙 학력 조회/추가/수정/삭제
   resources :educations, controller: 'education', only: %i[index create update destroy]
+
 end
