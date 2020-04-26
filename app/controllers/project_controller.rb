@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# 회원가입/탈퇴 기능을 관리하는 컨트롤러
+# 중앙 프로젝트 관리 기능을 관리하는 컨트롤러
 class ProjectController < ApiController
   before_action :validate_authorization
 
