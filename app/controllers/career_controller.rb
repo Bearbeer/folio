@@ -48,6 +48,7 @@ class CareerController < ApiController
 
   def validate_career_params
     params.require(:name)
+    params.require(:start_date)
     params.permit(:name, :description, :start_date, :end_date)
   end
 

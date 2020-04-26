@@ -11,31 +11,30 @@ class Education < ActiveRecord::Base
 
   belongs_to :user, class_name: 'User'
 
-  validates :user, presence: { message: '회원이 존재하지 않음' }
-  validates :name, presence: { message: '학교명이 존재하지 않음' }, 
-            length: { maximum: MAX_NAME_SIZE, message: "값이 #{MAX_NAME_SIZE}자를 초과함" }
+  validates :name,
+            presence: { message: '학교명이 존재하지 않음' },
+            length: {
+              maximum: MAX_NAME_SIZE,
+              message: "값이 #{MAX_NAME_SIZE}자를 초과함"
+            }
   validates :status, inclusion: { in: STATUS, message: '학적상태가 부적합함' }
-  validates :start_date, presence: { message: '입학일자가 존재하지 않음'}
-
-  validate :compare_dates, :validate_end_date
+  validates :start_date, presence: { message: '입학일자가 존재하지 않음' }
+  validate :validate_end_date
 
   private
 
-  # start_date & end_date 비교
-  # end_date가 존재할 경우 start_date < end_date가 정상
-  def compare_dates
-    return if !end_date.present? || (start_date < end_date)
-
-    raise '입학일자가 졸업일자보다 먼저여야 함'
-  end
-
-  # status와 end_date의 관계 확인
-  # status가 '졸업'인 경우에만 end_date가 있어야 함
+  # 종료일자가 시작일자보다 먼저이면 예외처리한다
+  # 종료일자가 없고 학적상태가 '졸업'이면 예외처리한다
   def validate_end_date
-    return if (status == '졸업') && end_date.present?
-    return if (status != '졸업') && end_date.blank?
+    if end_date.present?
+      return if start_date <= end_date
 
-    raise '학적상태가 졸업이면 졸업일자 필요, 그 외인 경우 졸업일자 불필요'
+      errors.add :end_date, '종료일자가 시작일자 이후이어야 합니다'
+    else
+      return if status != '졸업'
+
+      errors.add :end_date, '졸업일자를 지정하세요'
+    end
   end
 
 end
