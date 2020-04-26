@@ -13,7 +13,7 @@ module Portfolio
     MAX_DESCRIPTION_SIZE = 2000
 
     belongs_to :user, class_name: 'User'
-    belongs_to :entity, class_name: 'Portfolio::Entity'
+    belongs_to :portfolio, class_name: 'Portfolio::Entity'
 
     validates :user, presence: { message: '값이 존재하지 않음' }
     validates :name,

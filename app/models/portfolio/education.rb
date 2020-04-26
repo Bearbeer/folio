@@ -11,11 +11,12 @@ module Portfolio
     MAX_NAME_SIZE = 100
 
     belongs_to :user, class_name: 'User'
-    belongs_to :entity, class_name: 'Portfolio::Entity'
+    belongs_to :portfolio, class_name: 'Portfolio::Entity'
 
     validates :user, presence: { message: '회원이 존재하지 않음' }
     validates :portfolio, presence: { message: '포트폴리오가 존재하지 않음' }
-    validates :name, presence: { message: '학교명이 존재하지 않음' },
+    validates :name,
+              presence: { message: '학교명이 존재하지 않음' },
               length: { maximum: MAX_NAME_SIZE, message: "값이 #{MAX_NAME_SIZE}자를 초과함" }
     validates :status, inclusion: { in: STATUS, message: '학적상태가 부적합함' }
     validates :start_date, presence: { message: '입학일자가 존재하지 않음'}

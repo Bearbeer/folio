@@ -8,7 +8,7 @@ module Portfolio
     self.table_name = :portfolio_skills
 
     belongs_to :user, class_name: 'User'
-    belongs_to :entity, class_name: 'Portfolio::Entity'
+    belongs_to :portfolio, class_name: 'Portfolio::Entity'
 
     MAX_NAME_SIZE = 100
 
