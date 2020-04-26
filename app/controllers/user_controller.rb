@@ -8,7 +8,7 @@ class UserController < ApiController
   before_action :validate_authorization, only: :destroy
 
   def index
-    user = Users.find_by(id: current_user.id)
+    user = User.find_by(id: current_user.id)
     json(data: { user: user_view(user)})
   end
 
@@ -16,16 +16,36 @@ class UserController < ApiController
   def create
     validate_create_params
     validate_username
-    user = User.create!(username: params[:username], password: params[:password],
-                        email: params[:email], gender: params[:gender], birthday: params[:birthday], address: params[:address])
+
+    # 필수 아닌 파라미터들
+    params[:name] = '' unless params[:name].present?
+    params[:email] = '' unless params[:email].present?
+    params[:mobile] = '' unless params[:mobile].present?
+    params[:birthday] = '' unless params[:birthday].present?
+    params[:address] = '' unless params[:address].present?
+
+    user = User.create!(username: params[:username],
+                        password: params[:password],
+                        gender: params[:gender],
+                        name: params[:name],
+                        mobile: params[:mobile],
+                        email: params[:email],
+                        birthday: params[:birthday],
+                        address: params[:address])
 
     json(data: { user: user_view(user), session: session_view(user) })
   end
 
-  # POST /suers/:id
+  # PUT /users
   def update
-    validate_create_params
-    user = User.update!(email: params[:email], gender: params[:gender], birthday: params[:birthday], address: params[:address])
+    user = User.find_by(id: current_user.id)
+    user.update!(name: params[:name],
+                email: params[:email],
+                mobile: params[:mobile],
+                gender: params[:gender],
+                birthday: params[:birthday],
+                address: params[:address])
+
     json(data: { user: user_view(user) })
   end
 
@@ -42,6 +62,7 @@ class UserController < ApiController
   def validate_create_params
     params.require(:username)
     params.require(:password)
+
   end
 
   def validate_username
