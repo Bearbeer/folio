@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Portfolio
+module Portfolio
   # 포트폴리오 내의 커리어 모델
   class Career < ActiveRecord::Base
     acts_as_paranoid
