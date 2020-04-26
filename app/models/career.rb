@@ -14,11 +14,11 @@ class Career < ActiveRecord::Base
 
   private
 
-  # end_date 값이 start_date 값보다 이후인지 확인한다
+  # 종료일자가 시작일자 이후인지 확인한다
   def validate_end_date
     return if end_date.blank?
     return if start_date <= end_date
 
-    errors.add :end_date, '종료일시는 시작일시 이후이어야 합니다'
+    errors.add :end_date, '종료일자는 시작일자 이후이어야 합니다'
   end
 end
