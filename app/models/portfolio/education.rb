@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Portfolio
+module Portfolio
   # 포트폴리오 내 학력 모델
   class Education < ActiveRecord::Base
     acts_as_paranoid
@@ -11,7 +11,7 @@ class Portfolio
     MAX_NAME_SIZE = 100
 
     belongs_to :user, class_name: 'User'
-    belongs_to :portfolio, class_name: 'Portfolio'
+    belongs_to :entity, class_name: 'Portfolio::Entity'
 
     validates :user, presence: { message: '회원이 존재하지 않음' }
     validates :portfolio, presence: { message: '포트폴리오가 존재하지 않음' }
