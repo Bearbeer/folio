@@ -39,7 +39,7 @@ class PortfolioController < ApiController
                                   birthday: params[:birthday], address: params[:address], memo: params[:memo] )
     
     params[:portfolio_skills].each do |portfolio_skill|
-      Portfolio::Skill.create!(user: current_user, portfolio: portfolio, name: portfolio_skill[:name], level: portfolio_skill[:level])
+      Portfolio::Skill.create!(user: current_user, portfolio: portfolio, name: portfolio_skill[:name], level: portfolio_skill[:level].to_i)
     end
 
     params[:portfolio_educations].each do |portfolio_education|
@@ -90,7 +90,7 @@ class PortfolioController < ApiController
   def destroy
     params.require(:id)
 
-    portfolio = Portfolio::Entity.find_by(id: params[:id], uesr: current_user)
+    portfolio = Portfolio::Entity.find_by(id: params[:id], user: current_user)
     raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless portfolio
 
     portfolio.destroy
