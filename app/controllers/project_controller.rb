@@ -14,12 +14,10 @@ class ProjectController < ApiController
   # POST /projects
   def create
     params.require(:name)
-    unless params.key?(:description)
-      raise Exceptions::BadRequest, 'Description 파라미터가 누락됐습니다'
-    end
+    description = '' unless params[:description].present?
 
     project = Project.create!(user: current_user, name: params[:name],
-                              description: params[:description])
+                              description: description)
 
     json(data: { project: project_view(project) })
   end
