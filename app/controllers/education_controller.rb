@@ -15,7 +15,7 @@ class EducationController < ApiController
   # POST /educations
   def create
     params.require(:name)
-    params.rquire(:status)
+    params.require(:status)
     params.require(:start_date)
     unless params.key?(:end_date)
       raise Exceptions::BadRequest, 'end_date 파라미터가 누락되었습니다'
@@ -78,6 +78,7 @@ class EducationController < ApiController
     {
       id: education.id,
       name: education.name,
+      status: education.status,
       start_date: education.start_date,
       end_date: education.end_date,
       created_at: education.created_at,
