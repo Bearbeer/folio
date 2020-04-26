@@ -14,10 +14,10 @@ class ProjectController < ApiController
   # POST /projects
   def create
     params.require(:name)
-    description = '' unless params[:description].present?
+    params[:description] = '' unless params[:description].present?
 
     project = Project.create!(user: current_user, name: params[:name],
-                              description: description)
+                              description: params[:description])
 
     json(data: { project: project_view(project) })
   end
