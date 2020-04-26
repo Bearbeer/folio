@@ -24,6 +24,8 @@ class UserController < ApiController
     params[:birthday] = '' unless params[:birthday].present?
     params[:address] = '' unless params[:address].present?
 
+
+
     user = User.create!(username: params[:username],
                         password: params[:password],
                         gender: params[:gender],
@@ -38,7 +40,18 @@ class UserController < ApiController
 
   # PUT /users
   def update
+    validate_user_id
+    raise Exceptions::BadRequest, '성별을 정확히 선택해주세요' unless params[:gender] == '남자' || params[:gender] == '여자' || nil
+
     user = User.find_by(id: current_user.id)
+
+    params[:name] = current_user.name unless params[:name].present?
+    params[:email] = current_user.email unless params[:email].present?
+    params[:mobile] = current_user.mobile unless params[:mobile].present?
+    params[:birthday] = current_user.birthday unless params[:birthday].present?
+    params[:address] = current_user.address unless params[:address].present?
+
+
     user.update!(name: params[:name],
                 email: params[:email],
                 mobile: params[:mobile],
@@ -52,7 +65,8 @@ class UserController < ApiController
   # DELETE /users/:id
   def destroy
     validate_user_id
-    current_user.destroy
+    user = User.find_by(id: current_user.id)
+    user.destroy
 
     json(code: 200, message: '회원탈퇴가 완료되었습니다')
   end
@@ -63,7 +77,8 @@ class UserController < ApiController
     params.require(:username)
     params.require(:password)
 
-  end
+    raise Exceptions::BadRequest, '성별을 정확히 선택해주세요' unless params[:gender] == '남자' || params[:gender] == '여자' || params[:gender] == nil
+    end
 
   def validate_username
     return unless User.exists?(username: params[:username].downcase)
