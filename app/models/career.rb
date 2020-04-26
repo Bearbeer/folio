@@ -1,4 +1,7 @@
-class Career < ActiveRecord::Base 
+# frozen_string_literal: true
+
+# 중앙 커리어 모델
+class Career < ActiveRecord::Base
   acts_as_paranoid
 
   self.table_name = :careers
