@@ -2,7 +2,21 @@
 
 # 포트폴리오 헬퍼
 module PortfolioHelper
+
+  def portfolios_view(portfolios)
+    portfolios.map { |portfolio| portfolio_view(portfolio) }
+  end
+
   def portfolio_view(portfolio)
+    only_portfolio_view(portfolio).merge(
+      careers: portfolio.careers,
+      educations: portfolio.educations,
+      projects: portfolio.projects,
+      skills: portfolio.skills
+    )
+  end
+
+  def only_portfolio_view(portfolio)
     {
       id: portfolio.id, title: portfolio.title,
       name: portfolio.name, mobile: portfolio.mobile,
