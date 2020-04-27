@@ -7,7 +7,10 @@ module Portfolio
     def index
       validate_params([:portfolio_id])
 
-      skills = Portfolio::Skill.where(user: current_user, portfolio_id: params[:portfolio_id]).order(updated_at: :desc)
+      skills = Portfolio::Skill.where(
+        user: current_user, 
+        portfolio_id: params[:portfolio_id]
+      ).order(updated_at: :desc)
 
       json(data: { skills: skills_view(skills) })
     end
@@ -16,7 +19,12 @@ module Portfolio
     def create
       validate_params([:portfolio_id, :name, :level])
   
-      skill = Portfolio::Skill.create!(user: current_user, portfolio_id: params[:portfolio_id], name: params[:name], level: params[:level])
+      skill = Portfolio::Skill.create!(
+        user: current_user, 
+        portfolio_id: params[:portfolio_id], 
+        name: params[:name], 
+        level: params[:level]
+      )
   
       json(data: { skill: skill_view(skill) })
     end
@@ -25,7 +33,11 @@ module Portfolio
     def update
       validate_params([:portfolio_id, :id])
   
-      skill = Portfolio::Skill.find_by(id: params[:id], portfolio_id: params[:portfolio_id], user: current_user)
+      skill = Portfolio::Skill.find_by(
+        id: params[:id], 
+        portfolio_id: params[:portfolio_id], 
+        user: current_user
+      )
       raise Exceptions::NotFound unless skill
   
       skill.name = params[:name] if params.key?(:name)
@@ -39,7 +51,11 @@ module Portfolio
     def destroy
       validate_params([:portfolio_id, :id])
   
-      skill = Portfolio::Skill.find_by(id: params[:id], portfolio_id: params[:portfolio_id], user: current_user)
+      skill = Portfolio::Skill.find_by(
+        id: params[:id], 
+        portfolio_id: params[:portfolio_id],
+        user: current_user
+      )
       raise Exceptions::NotFound unless skill
   
       skill.destroy
