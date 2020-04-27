@@ -1,4 +1,5 @@
-class Portfolio
+module Portfolio
+  # 포트폴리오 하위 학력 기능 관리 컨트롤러
   class EducationController < ApiController
     before_action :validate_authorization
     
@@ -41,7 +42,7 @@ class Portfolio
       end
 
       if params.key?(:status) && !params[:status].in?(STATUS)
-        raise Exceptions::BadRequest, '졸업구분을 비울 수 없습니다'
+        raise Exceptions::BadRequest, '부적절한 졸업구분 입니다'
       end
 
       if params.key?(:start_date) && params[:start_date].blank?
