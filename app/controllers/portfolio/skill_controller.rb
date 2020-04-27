@@ -13,15 +13,19 @@ module Portfolio
 
     # POST portfolios/:portfolio_id/skills
     def create
-      validate_params([:portfolio_id, :name, :level])
+      validate_params([:portfolio_id, :skills])
+      validate_and_hash_skill_params
+      
+
       find_and_validate_portfolio
 
-      skill = @portfolio.skills.create!(user: current_user, 
-                                        portfolio_id: params[:portfolio_id], 
-                                        name: params[:name], 
-                                        level: params[:level])
+
+      ActiveRecord::Base.transaction do
+        @skills = @portfolio.skills.create!(skill_attrs)
+      end
+      puts @skills
   
-      json(data: { skill: skill_view(skill) })
+      json(data: { skills: skills_view(@skills) })
     end
 
     # PUT portfolios/:portfolio_id/skills/:id
@@ -49,6 +53,14 @@ module Portfolio
 
     def validate_params(props)
       props.each { |prop| params.require(prop) }
+    end
+
+    def validate_and_hash_skill_params 
+      params[:skills].each do |skill_param|
+        skill_param.require(:name)
+        skill_param.require(:level)
+      end
+      params[:skills].map { |skill_param| skill_param.permit(:name, :level).to_h.merge(user: current_user) }
     end
 
     def find_and_validate_portfolio
