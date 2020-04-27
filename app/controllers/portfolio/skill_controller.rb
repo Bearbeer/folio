@@ -87,7 +87,6 @@ module Portfolio
 
     def update_skill
       attributes = params.permit(:name, :level).to_h.compact
-      puts attributes
       return if attributes.blank?
 
       @skill.update! attributes

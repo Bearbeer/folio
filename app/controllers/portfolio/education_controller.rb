@@ -82,6 +82,19 @@ module Portfolio
       end
     end
     
+    def find_and_validate_portfolio
+      @portfolio = Portfolio::Entity.find_by(id: params[:portfolio_id],
+                                             user: current_user)
+
+      raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless @portfolio
+    end
+
+    def find_and_validate_education
+      @education = @portfolio.educations.find_by(id: params[:id])
+
+      raise Exceptions::NotFound, '학력이 존재하지 않습니다' unless @education
+    end
+    
     def create_educations
       education_attrs = params[:educations].map do |education_param|
         education_param.permit(:name, :status, :start_date, :end_date).to_h.merge(user: current_user)
@@ -97,19 +110,6 @@ module Portfolio
       return if attributes.blank?
 
       @education.update! attributes
-    end
-    
-    def find_and_validate_portfolio
-      @portfolio = Portfolio::Entity.find_by(id: params[:portfolio_id],
-                                             user: current_user)
-
-      raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless @portfolio
-    end
-
-    def find_and_validate_education
-      @education = @portfolio.educations.find_by(id: params[:id])
-
-      raise Exceptions::NotFound, '학력이 존재하지 않습니다' unless @education
     end
   end
 end
