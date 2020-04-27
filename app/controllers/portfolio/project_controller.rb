@@ -3,6 +3,8 @@
 module Portfolio
   # 포트폴리오 하위 프로젝트 기능 관리 컨트롤러
   class ProjectController < ApiController
+    include PortfolioHelper
+
     before_action :validate_authorization
 
     # GET /portfolios/:portfolio_id/projects
@@ -75,21 +77,6 @@ module Portfolio
       return if attributes.blank?
 
       @project.update! attributes
-    end
-
-    def projects_view(projects)
-      projects.map { |project| project_view(project) }
-    end
-
-    def project_view(project)
-      {
-        id: project.id,
-        portfolio_id: project.portfolio_id,
-        name: project.name,
-        description: project.description,
-        created_at: project.created_at,
-        updated_at: project.updated_at
-      }
     end
   end
 end

@@ -3,6 +3,8 @@
 module Portfolio
   # 포트폴리오 하위 경력 기능 관리 컨트롤러
   class CareerController < ApiController
+    include PortfolioHelper
+
     before_action :validate_authorization
 
     # GET /portfolios/:portfolio_id/careers
@@ -87,23 +89,6 @@ module Portfolio
       return if attributes.blank?
 
       @career.update! attributes
-    end
-
-    def careers_view(careers)
-      careers.map { |career| career_view(career) }
-    end
-
-    def career_view(career)
-      {
-        id: career.id,
-        portfolio_id: career.portfolio_id,
-        name: career.name,
-        description: career.description,
-        start_date: career.start_date,
-        end_date: career.end_date,
-        created_at: career.created_at,
-        updated_at: career.updated_at
-      }
     end
   end
 end
