@@ -14,16 +14,11 @@ module Portfolio
     # POST portfolios/:portfolio_id/skills
     def create
       validate_params([:portfolio_id, :skills])
-      validate_and_hash_skill_params
-      
+      validate_skill_params
 
       find_and_validate_portfolio
 
-
-      ActiveRecord::Base.transaction do
-        @skills = @portfolio.skills.create!(skill_attrs)
-      end
-      puts @skills
+      create_skills
   
       json(data: { skills: skills_view(@skills) })
     end
@@ -33,6 +28,7 @@ module Portfolio
       validate_params([:portfolio_id, :id])
       find_and_validate_portfolio
       find_and_validate_skill
+
       update_skill
   
       json(data: { skill: skill_view(@skill) })
@@ -55,12 +51,11 @@ module Portfolio
       props.each { |prop| params.require(prop) }
     end
 
-    def validate_and_hash_skill_params 
+    def validate_skill_params 
       params[:skills].each do |skill_param|
         skill_param.require(:name)
         skill_param.require(:level)
       end
-      params[:skills].map { |skill_param| skill_param.permit(:name, :level).to_h.merge(user: current_user) }
     end
 
     def find_and_validate_portfolio
@@ -76,10 +71,22 @@ module Portfolio
       raise Exceptions::NotFound, '기술 스택이 존재하지 않습니다' unless @skill
     end
     
+    def create_skills
+      skill_attrs = params[:skills].map do |skill_param|
+        skill_param.permit(:name, :level).to_h.merge(user: current_user)
+      end
+
+      ActiveRecord::Base.transaction do
+        @skills = @portfolio.skills.create!(skill_attrs)
+      end
+    end
+
     def update_skill
-      @skill.name = params[:name] if params.key?(:name)
-      @skill.level = params[:level] if params.key?(:level)
-      @skill.save!
+      attributes = params.permit(:name, :level).to_h.compact
+      puts attributes
+      return if attributes.blank?
+
+      @skill.update! attributes
     end
 
     ## View Models ##
