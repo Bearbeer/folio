@@ -9,7 +9,10 @@ module Portfolio
     def index
       validate_params([:portfolio_id])
 
-      educations = Portfolio::Education.where(user: current_user, portfolio_id: params[:portfolio_id]).order(updated_at: :desc)
+      educations = Portfolio::Education.where(
+        user: current_user, 
+        portfolio_id: params[:portfolio_id]
+      ).order(updated_at: :desc)
 
       json(data: { educations: educations_view(educations) })
     end
@@ -49,7 +52,11 @@ module Portfolio
         raise Exceptions::BadRequest, '입학일자를 비울 수 없습니다'
       end
 
-      education = Portfolio::Education.find_by(id: params[:id], portfolio_id: params[:portfolio_id], user: current_user)
+      education = Portfolio::Education.find_by(
+        id: params[:id], 
+        portfolio_id: params[:portfolio_id], 
+        user: current_user
+      )
       raise Exceptions::NotFound unless education
   
       education.name = params[:name] if params.key?(:name)
@@ -65,7 +72,11 @@ module Portfolio
     def destroy
       validate_params([:portfolio_id, :id])
   
-      education = Portfolio::Education.find_by(id: params[:id], portfolio_id: params[:portfolio_id], user: current_user)
+      education = Portfolio::Education.find_by(
+        id: params[:id], 
+        portfolio_id: params[:portfolio_id], 
+        user: current_user
+      )
       raise Exceptions::NotFound unless education
   
       education.destroy
