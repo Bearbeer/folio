@@ -6,6 +6,8 @@ module Portfolio
     acts_as_paranoid
 
     self.table_name = :portfolio_skills
+    
+    default_scope { order(updated_at: :desc) }
 
     belongs_to :user, class_name: 'User'
     belongs_to :portfolio, class_name: 'Portfolio::Entity'

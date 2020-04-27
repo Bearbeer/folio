@@ -20,10 +20,16 @@ Rails.application.routes.draw do
   resources :educations, controller: 'education', only: %i[index create update destroy]
 
   resources :portfolios, controller: 'portfolio', only: %i[index create update destroy] do
+    # Portfolio의 프로젝트 조회/추가/수정/삭제
     resources :projects, controller: 'portfolio/project', only: %i[index create update destroy]
+
+    # Portfolio의 경력 조회/추가/수정/삭제
     resources :careers, controller: 'portfolio/career', only: %i[index create update destroy]
 
     # Portfolio의 학력 조회/추가/수정/삭제
     resources :educations, controller: 'portfolio/education', only: %i[index create update destroy]
+
+    # Portfolio의 기술 조회/추가/수정/삭제
+    resources :skills, controller: 'portfolio/skill', only: %i[index create update destroy]
   end
 end

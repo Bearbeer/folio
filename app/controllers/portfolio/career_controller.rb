@@ -9,7 +9,7 @@ module Portfolio
 
     # GET /portfolios/:portfolio_id/careers
     def index
-      params.require(:portfolio_id)
+      validate_params([:portfolio_id])
       find_and_validate_portfolio
 
       json(data: { careers: careers_view(@portfolio.careers) })
@@ -17,13 +17,12 @@ module Portfolio
 
     # POST /portfolios/:portfolio_id/careers
     def create
-      params.require(:portfolio_id)
-      params.require(:name)
-      params.require(:start_date)
+      validate_create_params
       find_and_validate_portfolio
-      career = @portfolio.careers.create! attributes.merge(user: current_user)
 
-      json(data: { career: career_view(career) })
+      create_careers
+
+      json(data: { careers: careers_view(@careers) })
     end
 
     # PUT /portfolios/:portfolio_id/careers/:id
@@ -31,6 +30,7 @@ module Portfolio
       validate_update_params
       find_and_validate_portfolio
       find_and_validate_career
+
       update_career
 
       json(data: { career: career_view(@career) })
@@ -38,20 +38,32 @@ module Portfolio
 
     # DELETE /portfolios/:portfolio_id/careers/:id
     def destroy
-      params.require(:id)
-      params.require(:portfolio_id)
+      validate_params([:portfolio_id, :id])
       find_and_validate_portfolio
       find_and_validate_career
+
       @career.destroy
 
-      json(code: 200)
+      json(code: 200, message: '삭제되었습니다.')
     end
 
     private
 
+    def validate_params(props)
+      props.each { |prop| params.require(prop) }
+    end
+    
+    def validate_create_params 
+      validate_params([:portfolio_id, :careers])
+      
+      params[:careers].each do |career_param|
+        career_param.require(:name)
+        career_param.require(:start_date)
+      end
+    end
+
     def validate_update_params
-      params.require(:id)
-      params.require(:portfolio_id)
+      validate_params([:portfolio_id, :id])
       validate_name
       validate_start_date
     end
@@ -81,11 +93,18 @@ module Portfolio
       raise Exceptions::NotFound, '경력이 존재하지 않습니다' unless @career
     end
 
-    def attributes
-      @attributes ||= params.permit(:name, :description, :start_date, :end_date).to_h.compact
+    def create_careers
+      career_attrs = params[:careers].map do |career_param|
+        career_param.permit(:name, :description, :start_date, :end_date).to_h.merge(user: current_user)
+      end
+
+      ActiveRecord::Base.transaction do
+        @careers = @portfolio.careers.create!(career_attrs)
+      end
     end
 
     def update_career
+      attributes = params.permit(:name, :description, :start_date, :end_date).to_h.compact
       return if attributes.blank?
 
       @career.update! attributes
