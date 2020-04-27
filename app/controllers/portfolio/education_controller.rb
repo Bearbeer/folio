@@ -8,13 +8,9 @@ module Portfolio
     # GET portfolios/:portfolio_id/educations
     def index
       validate_params([:portfolio_id])
+      find_and_validate_portfolio
 
-      educations = Portfolio::Education.where(
-        user: current_user, 
-        portfolio_id: params[:portfolio_id]
-      ).order(updated_at: :desc)
-
-      json(data: { educations: educations_view(educations) })
+      json(data: { educations: educations_view(@portfolio.educations) })
     end
 
     # POST portfolios/:portfolio_id/educations
@@ -24,14 +20,13 @@ module Portfolio
         raise Exceptions::BadRequest, 'end_date 파라미터가 누락되었습니다'
       end
 
-      education = Portfolio::Education.create!(
-        user: current_user, 
-        portfolio_id: params[:portfolio_id], 
-        name: params[:name], 
-        status: params[:status], 
-        start_date: params[:start_date], 
-        end_date: params[:end_date]
-      )
+      find_and_validate_portfolio
+
+      education = @portfolio.educations.create!(user: current_user, 
+                                                name: params[:name], 
+                                                status: params[:status], 
+                                                start_date: params[:start_date], 
+                                                end_date: params[:end_date])
   
       json(data: { education: education_view(education) })
     end
@@ -39,7 +34,34 @@ module Portfolio
     # PUT portfolios/:portfolio_id/educations/:id
     def update
       validate_params([:portfolio_id, :id])
+      validate_unrequired_params
+      
+      find_and_validate_portfolio
+      find_and_validate_education
 
+      update_education
+  
+      json(data: { education: education_view(@education) })
+    end
+
+    # DELETE portfolios/:portfolio_id/educations/:id
+    def destroy
+      validate_params([:portfolio_id, :id])
+      find_and_validate_portfolio
+      find_and_validate_education
+  
+      @education.destroy
+  
+      json(code: 200, message: '삭제되었습니다.')
+    end
+
+    private
+
+    def validate_params(props)
+      props.each { |prop| params.require(prop) }
+    end
+
+    def validate_unrequired_params
       if params.key?(:name) && params[:name].blank?
         raise Exceptions::BadRequest, '학교명을 비울 수 없습니다'
       end
@@ -51,43 +73,27 @@ module Portfolio
       if params.key?(:start_date) && params[:start_date].blank?
         raise Exceptions::BadRequest, '입학일자를 비울 수 없습니다'
       end
-
-      education = Portfolio::Education.find_by(
-        id: params[:id], 
-        portfolio_id: params[:portfolio_id], 
-        user: current_user
-      )
-      raise Exceptions::NotFound unless education
-  
-      education.name = params[:name] if params.key?(:name)
-      education.status = params[:status] if params.key?(:status)
-      education.start_date = params[:start_date] if params.key?(:start_date)
-      education.end_date = params[:end_date] if params.key?(:end_date)
-      education.save!
-  
-      json(data: { education: education_view(education) })
     end
 
-    # DELETE portfolios/:portfolio_id/educations/:id
-    def destroy
-      validate_params([:portfolio_id, :id])
-  
-      education = Portfolio::Education.find_by(
-        id: params[:id], 
-        portfolio_id: params[:portfolio_id], 
-        user: current_user
-      )
-      raise Exceptions::NotFound unless education
-  
-      education.destroy
-  
-      json(code: 200, message: '삭제되었습니다.')
+    def update_education
+      @education.name = params[:name] if params.key?(:name)
+      @education.status = params[:status] if params.key?(:status)
+      @education.start_date = params[:start_date] if params.key?(:start_date)
+      @education.end_date = params[:end_date] if params.key?(:end_date)
+      @education.save!
+    end
+    
+    def find_and_validate_portfolio
+      @portfolio = Portfolio::Entity.find_by(id: params[:portfolio_id],
+                                             user: current_user)
+
+      raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless @portfolio
     end
 
-    private
+    def find_and_validate_education
+      @education = @portfolio.educations.find_by(id: params[:id])
 
-    def validate_params(props)
-      props.each { |prop| params.require(prop) }
+      raise Exceptions::NotFound, '학력이 존재하지 않습니다' unless @education
     end
 
     ## View Models ##
