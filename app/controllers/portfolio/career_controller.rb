@@ -95,7 +95,7 @@ module Portfolio
 
     def create_careers
       career_attrs = params[:careers].map do |career_param|
-        career_param.permit(:name, :description, :start_date, :end_date).to_h.merge(user: current_user)
+        career_param.permit(:name, :description, :start_date, :end_date).to_h.compact.merge(user: current_user)
       end
 
       ActiveRecord::Base.transaction do

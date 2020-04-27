@@ -77,7 +77,7 @@ module Portfolio
     
     def create_skills
       skill_attrs = params[:skills].map do |skill_param|
-        skill_param.permit(:name, :level).to_h.merge(user: current_user)
+        skill_param.permit(:name, :level).to_h.compact.merge(user: current_user)
       end
 
       ActiveRecord::Base.transaction do

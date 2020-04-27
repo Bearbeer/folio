@@ -83,7 +83,7 @@ module Portfolio
 
     def create_projects
       project_attrs = params[:projects].map do |project_param|
-        project_param.permit(:name, :description).to_h.merge(user: current_user)
+        project_param.permit(:name, :description).to_h.compact.merge(user: current_user)
       end
 
       ActiveRecord::Base.transaction do

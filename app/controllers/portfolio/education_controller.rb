@@ -97,7 +97,7 @@ module Portfolio
     
     def create_educations
       education_attrs = params[:educations].map do |education_param|
-        education_param.permit(:name, :status, :start_date, :end_date).to_h.merge(user: current_user)
+        education_param.permit(:name, :status, :start_date, :end_date).to_h.compact.merge(user: current_user)
       end
 
       ActiveRecord::Base.transaction do
