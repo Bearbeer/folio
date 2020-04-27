@@ -7,9 +7,9 @@ class UserController < ApiController
 
   before_action :validate_authorization, only: :destroy
 
-  def index
-    user = User.find_by(id: current_user.id)
-    json(data: { user: user_view(user)})
+  # GET /users/:id
+  def show
+    json(data: { user: user_view(current_user) })
   end
 
   # POST /users
@@ -38,7 +38,7 @@ class UserController < ApiController
     json(data: { user: user_view(user), session: session_view(user) })
   end
 
-  # PUT /users
+  # PUT /users/:id
   def update
     validate_user_id
     raise Exceptions::BadRequest, '성별을 정확히 선택해주세요' unless params[:gender] == '남자' || params[:gender] == '여자' || nil
@@ -78,7 +78,7 @@ class UserController < ApiController
     params.require(:password)
 
     raise Exceptions::BadRequest, '성별을 정확히 선택해주세요' unless params[:gender] == '남자' || params[:gender] == '여자' || params[:gender] == nil
-    end
+  end
 
   def validate_username
     return unless User.exists?(username: params[:username].downcase)

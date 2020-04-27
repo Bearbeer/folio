@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :sessions, controller: 'session', only: %i[create]
 
   # 회원정보 / 회원가입 / 회원정보 수정 / 회원탈퇴
-  resources :users, controller: 'user', only: %i[index create update destroy]
+  resources :users, controller: 'user', only: %i[show create update destroy]
 
   # 중앙 스킬 조회/추가/수정/삭제
   resources :skills, controller: 'skill', only: %i[index create update destroy]
