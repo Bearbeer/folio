@@ -1,6 +1,8 @@
 module Portfolio
   # 포트폴리오 하위 skill 기능 관리 컨트롤러
   class SkillController < ApiController
+    include PortfolioHelper
+
     before_action :validate_authorization
     
     # GET portfolios/:portfolio_id/skills
@@ -13,9 +15,7 @@ module Portfolio
 
     # POST portfolios/:portfolio_id/skills
     def create
-      validate_params([:portfolio_id, :skills])
-      validate_skill_params
-
+      validate_create_params
       find_and_validate_portfolio
 
       create_skills
@@ -51,7 +51,9 @@ module Portfolio
       props.each { |prop| params.require(prop) }
     end
 
-    def validate_skill_params 
+    def validate_create_params 
+      validate_params([:portfolio_id, :skills])
+      
       params[:skills].each do |skill_param|
         skill_param.require(:name)
         skill_param.require(:level)
@@ -87,25 +89,6 @@ module Portfolio
       return if attributes.blank?
 
       @skill.update! attributes
-    end
-
-    ## View Models ##
-
-    # Skills List
-    def skills_view(skills)
-      skills.map { |skill| skill_view(skill) }
-    end
-
-    # Skill
-    def skill_view(skill)
-      {
-        id: skill.id,
-        portfolio_id: skill.portfolio_id,
-        name: skill.name,
-        level: skill.level,
-        created_at: skill.created_at,
-        updated_at: skill.updated_at
-      }
     end
   end
 end
