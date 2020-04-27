@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Portfolio
   # 포트폴리오 하위 skill 기능 관리 컨트롤러
   class SkillController < ApiController
