@@ -15,14 +15,18 @@ class User < ActiveRecord::Base
               with: /\A[a-z]+[a-z0-9]{0,13}\z/,
               message: '은 영문 소문자로 시작하는 영문+숫자 조합이어야 합니다'
             }
-  validates :password, length: { minimum: 8, message: '는 8자리 이상이어야 합니다' }
-  validate :password_with_blank
+
+  validate :validate_password
 
   private
 
-  def password_with_blank
-    return if password.present? && !password.include?(' ')
+  def validate_password
+    if password.nil?
+      errors.add(:password, '를 입력해주세요') if password_digest.blank?
+      return
+    end
 
-    errors.add :password, '에 공백문자가 포함되지 않아야 합니다'
+    errors.add :password, '는 8자리 이상이어야 합니다' if password.length < 8
+    errors.add :password, '에 공백문자가 포함되지 않아야 합니다' if password.include?(' ')
   end
 end
