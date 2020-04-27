@@ -1,6 +1,8 @@
 module Portfolio
   # 포트폴리오 하위 학력 기능 관리 컨트롤러
   class EducationController < ApiController
+    include PortfolioHelper
+
     before_action :validate_authorization
     
     STATUS = Education::STATUS
@@ -15,27 +17,17 @@ module Portfolio
 
     # POST portfolios/:portfolio_id/educations
     def create
-      validate_params([:portfolio_id, :name, :status, :start_date])
-      unless params.key?(:end_date)
-        raise Exceptions::BadRequest, 'end_date 파라미터가 누락되었습니다'
-      end
-
+      validate_create_params
       find_and_validate_portfolio
 
-      education = @portfolio.educations.create!(user: current_user, 
-                                                name: params[:name], 
-                                                status: params[:status], 
-                                                start_date: params[:start_date], 
-                                                end_date: params[:end_date])
+      create_educations
   
-      json(data: { education: education_view(education) })
+      json(data: { educations: educations_view(@educations) })
     end
 
     # PUT portfolios/:portfolio_id/educations/:id
     def update
-      validate_params([:portfolio_id, :id])
-      validate_unrequired_params
-      
+      validate_update_params
       find_and_validate_portfolio
       find_and_validate_education
 
@@ -60,8 +52,23 @@ module Portfolio
     def validate_params(props)
       props.each { |prop| params.require(prop) }
     end
+    
+    def validate_create_params 
+      validate_params([:portfolio_id, :educations])
+      
+      params[:educations].each do |education_param|
+        education_param.require(:name)
+        education_param.require(:status)
+        education_param.require(:start_date)
+        unless education_param.key?(:end_date)
+          raise Exceptions::BadRequest, 'end_date 파라미터가 누락되었습니다'
+        end
+      end
+    end
 
-    def validate_unrequired_params
+    def validate_update_params
+      validate_params([:portfolio_id, :id])
+
       if params.key?(:name) && params[:name].blank?
         raise Exceptions::BadRequest, '학교명을 비울 수 없습니다'
       end
@@ -74,13 +81,22 @@ module Portfolio
         raise Exceptions::BadRequest, '입학일자를 비울 수 없습니다'
       end
     end
+    
+    def create_educations
+      education_attrs = params[:educations].map do |education_param|
+        education_param.permit(:name, :status, :start_date, :end_date).to_h.merge(user: current_user)
+      end
+
+      ActiveRecord::Base.transaction do
+        @educations = @portfolio.educations.create!(education_attrs)
+      end
+    end
 
     def update_education
-      @education.name = params[:name] if params.key?(:name)
-      @education.status = params[:status] if params.key?(:status)
-      @education.start_date = params[:start_date] if params.key?(:start_date)
-      @education.end_date = params[:end_date] if params.key?(:end_date)
-      @education.save!
+      attributes = params.permit(:name, :status, :start_date, :end_date).to_h.compact
+      return if attributes.blank?
+
+      @education.update! attributes
     end
     
     def find_and_validate_portfolio
@@ -94,27 +110,6 @@ module Portfolio
       @education = @portfolio.educations.find_by(id: params[:id])
 
       raise Exceptions::NotFound, '학력이 존재하지 않습니다' unless @education
-    end
-
-    ## View Models ##
-
-    # Educations List
-    def educations_view(educations)
-      educations.map { |education| education_view(education) }
-    end
-
-    # Education
-    def education_view(education)
-      {
-        id: education.id,
-        portfolio_id: education.portfolio_id,
-        name: education.name,
-        status: education.status,
-        start_date: education.start_date,
-        end_date: education.end_date,
-        created_at: education.created_at,
-        updated_at: education.updated_at
-      }
     end
   end
 end
