@@ -6,9 +6,22 @@ class Career < ActiveRecord::Base
 
   self.table_name = :careers
 
+  MAX_NAME_SIZE = 100
+  MAX_DESC_SIZE = 2000
+
   belongs_to :user, class_name: 'User'
 
-  validates :name, presence: { message: '을 입력하세요' }
+  validates :name,
+            presence: { message: '을 입력하세요' },
+            length: {
+                maximum: MAX_NAME_SIZE,
+                message: "값이 #{MAX_NAME_SIZE}자를 초과함"
+            }
+  validates :description,
+            length: {
+                maximum: MAX_NAME_SIZE,
+                message: "값이 #{MAX_DESC_SIZE}자를 초과함"
+            }
   validates :start_date, presence: { message: '을 지정하세요' }
   validate :validate_end_date
 
