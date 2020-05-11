@@ -17,18 +17,16 @@ class CareerController < ApiController
 
   # POST /careers
   def create
-    validate_career_params
-    career = Career.create!(user_id: current_user.id, name: params[:name], description: params[:description], start_date: params[:start_date], end_date: params[:end_date])
-
+    attributes = validate_create_params
+    career = Career.create!(attributes)
     json(code: 200, data: { career: career_view(career) })
   end
 
   # PUT /careers/:id
   def update
-    params.require(:id)
-    validate_career_params
+    attributes = validate_update_params
     career = get_career_by_id params[:id]
-    career.update!(name: params[:name], description: params[:description], start_date: params[:start_date], end_date: params[:end_date])
+    career.update!(attributes)
 
     json(code: 200, data: { career: career_view(career) })
 
@@ -46,10 +44,19 @@ class CareerController < ApiController
 
   private
 
-  def validate_career_params
+  def validate_create_params
     params.require(:name)
     params.require(:start_date)
-    params.permit(:name, :description, :start_date, :end_date)
+    params[:description] = '' unless params[:description].present?
+    params[:user_id] = current_user.id
+    params.permit(:user_id, :name, :description, :start_date, :end_date).to_h.compact
+
+  end
+
+  def validate_update_params
+    params.require(:id)
+    params[:description] = '' unless params[:description].present?
+    params.permit(:name, :description, :start_date, :end_date).to_h.compact
   end
 
   def get_career_by_id(career_id)
