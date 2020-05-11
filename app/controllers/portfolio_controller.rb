@@ -45,7 +45,6 @@ class PortfolioController < ApiController
 
   def validate_update_params
     params.require(:id)
-
     return unless params.key?(:title) && params[:title].blank?
     
     raise Exceptions::BadRequest, '포트폴리오 제목을 비울 수 없습니다'
@@ -67,6 +66,3 @@ class PortfolioController < ApiController
     @attributes ||= params.permit(:title, :name, :mobile, :email, :gender, :birthday, :address, :memo).to_h.compact
   end
 end
-
-
-    
