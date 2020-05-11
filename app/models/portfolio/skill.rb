@@ -24,7 +24,5 @@ module Portfolio
                 less_than_or_equal_to: 5,
                 message: '레벨이 1~5 범위를 벗어남'
               }
-  
-    scope :level_order, -> { order(level: :desc ) }
   end
 end
