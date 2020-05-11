@@ -19,7 +19,7 @@ class Career < ActiveRecord::Base
             }
   validates :description,
             length: {
-                maximum: MAX_NAME_SIZE,
+                maximum: MAX_DESC_SIZE,
                 message: "값이 #{MAX_DESC_SIZE}자를 초과함"
             }
   validates :start_date, presence: { message: '을 지정하세요' }
