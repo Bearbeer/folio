@@ -9,6 +9,8 @@ module Portfolio
 
     STATUS = %w[재학 휴학 졸업예정 졸업].freeze
     MAX_NAME_SIZE = 100
+    
+    default_scope { order(updated_at: :desc) }
 
     belongs_to :user, class_name: 'User'
     belongs_to :portfolio, class_name: 'Portfolio::Entity'
