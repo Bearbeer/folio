@@ -9,48 +9,17 @@ class UserController < ApiController
 
   # POST /users
   def create
-    validate_create_params
-    validate_username
+    attributes = validate_create_params
 
-    # 필수 아닌 파라미터들
-    params[:name] = '' unless params[:name].present?
-    params[:email] = '' unless params[:email].present?
-    params[:mobile] = '' unless params[:mobile].present?
-    params[:birthday] = '' unless params[:birthday].present?
-    params[:address] = '' unless params[:address].present?
-
-
-
-    user = User.create!(username: params[:username],
-                        password: params[:password],
-                        gender: params[:gender],
-                        name: params[:name],
-                        mobile: params[:mobile],
-                        email: params[:email],
-                        birthday: params[:birthday],
-                        address: params[:address])
+    user = User.create!(attributes)
 
     json(data: { user: user_view(user), session: session_view(user) })
   end
 
   # PUT /users/:id
   def update
-    validate_user_id
-    validate_gender
-
-    params[:name] = current_user.name unless params[:name].present?
-    params[:email] = current_user.email unless params[:email].present?
-    params[:mobile] = current_user.mobile unless params[:mobile].present?
-    params[:birthday] = current_user.birthday unless params[:birthday].present?
-    params[:address] = current_user.address unless params[:address].present?
-
-
-    current_user.update!(name: params[:name],
-                email: params[:email],
-                mobile: params[:mobile],
-                gender: params[:gender],
-                birthday: params[:birthday],
-                address: params[:address])
+    attributes = validate_update_params
+    current_user.update!(attributes)
 
     json(data: { user: user_view(current_user) })
   end
@@ -68,7 +37,25 @@ class UserController < ApiController
   def validate_create_params
     params.require(:username)
     params.require(:password)
+    validate_username
     validate_gender
+
+    params[:name] = '' unless params[:name].present?
+    params[:email] = '' unless params[:email].present?
+    params[:mobile] = '' unless params[:mobile].present?
+    params[:birthday] = '' unless params[:birthday].present?
+    params[:address] = '' unless params[:address].present?
+
+    params.permit(:username, :password, :gender, :name, :email, :mobile, :birthday, :address)
+          .to_h.compact
+
+  end
+
+  def validate_update_params
+    validate_user_id
+    validate_gender
+    params.permit(:gender, :name, :email, :mobile, :birthday, :address)
+          .to_h.compact
 
   end
 
