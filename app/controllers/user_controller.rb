@@ -15,6 +15,13 @@ class UserController < ApiController
     json(data: { user: user_view(user), session: session_view(user) })
   end
 
+  # GET /users/profile
+  def profile
+    user = User.find_by(id: current_user.id)
+
+    json(data: { user: user_view(user) })
+  end
+
   # PUT /users/:id
   def update
     attributes = prepare_update_params
