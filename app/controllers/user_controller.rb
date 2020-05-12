@@ -9,8 +9,7 @@ class UserController < ApiController
 
   # POST /users
   def create
-    attributes = validate_create_params
-
+    attributes = prepare_create_params
     user = User.create!(attributes)
 
     json(data: { user: user_view(user), session: session_view(user) })
@@ -18,7 +17,7 @@ class UserController < ApiController
 
   # PUT /users/:id
   def update
-    attributes = validate_update_params
+    attributes = prepare_update_params
     current_user.update!(attributes)
 
     json(data: { user: user_view(current_user) })
@@ -33,31 +32,6 @@ class UserController < ApiController
   end
 
   private
-
-  def validate_create_params
-    params.require(:username)
-    params.require(:password)
-    validate_username
-    validate_gender
-
-    params[:name] = '' unless params[:name].present?
-    params[:email] = '' unless params[:email].present?
-    params[:mobile] = '' unless params[:mobile].present?
-    params[:birthday] = '' unless params[:birthday].present?
-    params[:address] = '' unless params[:address].present?
-
-    params.permit(:username, :password, :gender, :name, :email, :mobile, :birthday, :address)
-          .to_h.compact
-
-  end
-
-  def validate_update_params
-    validate_user_id
-    validate_gender
-    params.permit(:gender, :name, :email, :mobile, :birthday, :address)
-          .to_h.compact
-
-  end
 
   def validate_username
     return unless User.exists?(username: params[:username].downcase)
@@ -74,7 +48,34 @@ class UserController < ApiController
 
   def validate_gender
     return if params[:gender].in?(User::GENDER) || params[:gender].nil?
+
     raise Exceptions::BadRequest, '성별을 정확히 선택해주세요'
+  end
+
+  def validate_create_params
+    params.require(:username)
+    params.require(:password)
+    validate_username
+    validate_gender
+  end
+
+  def prepare_create_params
+    validate_create_params
+
+    params.permit(:username, :password, :gender, :name, :email, :mobile, :birthday, :address)
+          .to_h.compact
+  end
+
+  def validate_update_params
+    validate_user_id
+    validate_gender
+  end
+
+  def prepare_update_params
+    validate_update_params
+
+    params.permit(:gender, :name, :email, :mobile, :birthday, :address)
+          .to_h.compact
   end
 
 end
