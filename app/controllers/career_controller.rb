@@ -72,7 +72,7 @@ class CareerController < ApiController
   end
 
   def get_career_by_id(career_id)
-    career = Career.find_by(id: career_id, user_id: current_user.id)
+    career = Career.find_by(id: career_id, user: current_user)
     raise Exceptions::NotFound, '찾을 수 없는 경력입니다' unless career
 
     career
