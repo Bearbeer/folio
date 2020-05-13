@@ -5,7 +5,7 @@ class UserController < ApiController
   include UserHelper
   include SessionHelper
 
-  before_action :validate_authorization, except: %i[create destroy]
+  before_action :validate_authorization, except: :create
 
   # POST /users
   def create
