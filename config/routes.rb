@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   # 회원정보 / 회원가입 / 회원정보 수정 / 회원탈퇴
   resources :users, controller: 'user' do
-    get :profile, on: :collection
+    post :profile, on: :collection
   end
 
   # 중앙 스킬 조회/추가/수정/삭제
