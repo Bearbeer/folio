@@ -15,7 +15,7 @@ class UserController < ApiController
     json(data: { user: user_view(user), session: session_view(user) })
   end
 
-  # GET /users/profile
+  # POST /users/profile
   def profile
     json(data: { user: user_view(current_user) })
   end
