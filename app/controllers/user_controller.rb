@@ -5,7 +5,7 @@ class UserController < ApiController
   include UserHelper
   include SessionHelper
 
-  before_action :validate_authorization, only: :destroy
+  before_action :validate_authorization, except: %i[create destroy]
 
   # POST /users
   def create
@@ -17,9 +17,8 @@ class UserController < ApiController
 
   # GET /users/profile
   def profile
-    user = User.find_by(id: current_user.id)
 
-    json(data: { user: user_view(user) })
+    json(data: { user: user_view(current_user) })
   end
 
   # PUT /users/:id
