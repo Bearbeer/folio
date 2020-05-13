@@ -8,10 +8,10 @@ module Portfolio
     self.table_name = :portfolios
 
     belongs_to :user, class_name: 'User'
-    has_many :skills, class_name: 'Portfolio::Skill', foreign_key: :portfolio_id
-    has_many :careers, class_name: 'Portfolio::Career', foreign_key: :portfolio_id
-    has_many :educations, class_name: 'Portfolio::Education', foreign_key: :portfolio_id
-    has_many :projects, class_name: 'Portfolio::Project', foreign_key: :portfolio_id
+    has_many :skills, class_name: 'Portfolio::Skill', foreign_key: :portfolio_id, dependent: :destroy
+    has_many :careers, class_name: 'Portfolio::Career', foreign_key: :portfolio_id, dependent: :destroy
+    has_many :educations, class_name: 'Portfolio::Education', foreign_key: :portfolio_id, dependent: :destroy
+    has_many :projects, class_name: 'Portfolio::Project', foreign_key: :portfolio_id, dependent: :destroy
 
     GENDER = %w[남자 여자].freeze
     MAX_SIZE = {

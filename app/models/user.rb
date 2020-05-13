@@ -8,6 +8,12 @@ class User < ActiveRecord::Base
 
   self.table_name = :users
 
+  has_many :portfolios, class_name: 'Portfolio::Entity', foreign_key: :user_id, dependent: :destroy
+  has_many :skills, class_name: 'Skill', foreign_key: :user_id, dependent: :destroy
+  has_many :careers, class_name: 'Career', foreign_key: :user_id, dependent: :destroy
+  has_many :educations, class_name: 'Education', foreign_key: :user_id, dependent: :destroy
+  has_many :projects, class_name: 'Project', foreign_key: :user_id, dependent: :destroy
+
   validates :username,
             uniqueness: { case_sensitive: false, message: '값이 이미 존재합니다' },
             length: { in: 6..12, message: '는 6자리 이상 12자리 이하이어야 합니다' },

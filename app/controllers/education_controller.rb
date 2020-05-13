@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# 회원가입/탈퇴 기능을 관리하는 컨트롤러
+# 학력 조회/생성/수정/삭제 기능을 관리하는 컨트롤러
 class EducationController < ApiController
   before_action :validate_authorization
 
