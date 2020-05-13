@@ -17,7 +17,6 @@ class UserController < ApiController
 
   # GET /users/profile
   def profile
-
     json(data: { user: user_view(current_user) })
   end
 
