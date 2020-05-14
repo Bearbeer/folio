@@ -8,6 +8,12 @@ class User < ActiveRecord::Base
 
   self.table_name = :users
 
+  has_many :portfolios, class_name: 'Portfolio::Entity', foreign_key: :user_id, dependent: :destroy
+  has_many :skills, class_name: 'Skill', foreign_key: :user_id, dependent: :destroy
+  has_many :careers, class_name: 'Career', foreign_key: :user_id, dependent: :destroy
+  has_many :educations, class_name: 'Education', foreign_key: :user_id, dependent: :destroy
+  has_many :projects, class_name: 'Project', foreign_key: :user_id, dependent: :destroy
+
   GENDER = %w[남자 여자].freeze
   MAX_SIZE = {
     name: 100,

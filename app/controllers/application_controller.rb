@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  attr_reader :current_user
+  attr_accessor :current_user
 
   protected
 
