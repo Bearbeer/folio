@@ -4,12 +4,14 @@ Rails.application.routes.draw do
   # 로그인
   resources :sessions, controller: 'session', only: %i[create]
 
-  # 회원가입 / 회원탈퇴
-  resources :users, controller: 'user', only: %i[create destroy]
+  # 회원정보 / 회원가입 / 회원정보 수정 / 회원탈퇴
+  resources :users, controller: 'user' do
+    post :profile, on: :collection
+  end
 
   # 중앙 스킬 조회/추가/수정/삭제
   resources :skills, controller: 'skill', only: %i[index create update destroy]
-  
+
   # 중앙 프로젝트 추가/수정/삭제
   resources :projects, controller: 'project', only: %i[index create update destroy]
 
