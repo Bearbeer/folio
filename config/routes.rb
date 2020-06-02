@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   # 중앙 학력 조회/추가/수정/삭제
   resources :educations, controller: 'education', only: %i[index create update destroy]
 
-  resources :portfolios, controller: 'portfolio', only: %i[index create update destroy] do
+  resources :portfolios, controller: 'portfolio', only: %i[index show create update destroy] do
     # Portfolio의 프로젝트 조회/추가/수정/삭제
     resources :projects, controller: 'portfolio/project', only: %i[index create update destroy]
 

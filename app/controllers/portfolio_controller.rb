@@ -12,6 +12,16 @@ class PortfolioController < ApiController
 
     json(data: { portfolios: portfolios_view(portfolios)})
   end
+
+  # GET /portfolios/:id
+  def show
+    params.require(:id)
+
+    portfolio = Portfolio::Entity.find_by(user: current_user, id: params[:id])
+    raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless portfolio
+
+    json(data: { portfolio: portfolio_view(portfolio)})
+  end
   
   # POST /portfolios
   def create
