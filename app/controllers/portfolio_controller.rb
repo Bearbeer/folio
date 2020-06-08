@@ -16,17 +16,15 @@ class PortfolioController < ApiController
   # GET /portfolios/:id
   def show
     params.require(:id)
-
     portfolio = Portfolio::Entity.find_by(user: current_user, id: params[:id])
     raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless portfolio
 
     json(data: { portfolio: portfolio_view(portfolio)})
   end
-  
+
   # POST /portfolios
   def create
     params.require(:title)
-    
     portfolio = Portfolio::Entity.create! attributes.merge(user: current_user)
 
     json(data: { portfolio: portfolio_view(portfolio)})
@@ -51,18 +49,26 @@ class PortfolioController < ApiController
     json(code: 200)
   end
 
+  # POST /portfolio/:id/share
+  def share
+    find_and_validate_portfolio
+    code = @portfolio.share
+
+    json(data: { code: code })
+  end
+
   private
 
   def validate_update_params
     params.require(:id)
     return unless params.key?(:title) && params[:title].blank?
-    
+
     raise Exceptions::BadRequest, '포트폴리오 제목을 비울 수 없습니다'
   end
 
   def find_and_validate_portfolio
     @portfolio = Portfolio::Entity.find_by(id: params[:id], user: current_user)
-    
+
     raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless @portfolio
   end
 

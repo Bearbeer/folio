@@ -34,5 +34,20 @@ module Portfolio
     validates :memo, length: { maximum: MAX_SIZE[:memo], message: "값이 #{MAX_SIZE[:memo]}자를 초과함" }
     validates :gender, inclusion: { in: GENDER, message: '지정된 성별 분류를 따르지 않음' }, allow_nil: true
 
+    # 공유 링크 생성
+    def share
+      return public_code if public_code.present?
+
+      code = SecureRandom.hex(5)
+
+      loop do
+        code = SecureRandom.hex(5)
+
+        break unless Portfolio::Entity.exists?(public_code: code)
+      end
+      update!(public_code: code)
+
+      public_code
+    end
   end
 end

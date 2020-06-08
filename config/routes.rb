@@ -22,6 +22,9 @@ Rails.application.routes.draw do
   resources :educations, controller: 'education', only: %i[index create update destroy]
 
   resources :portfolios, controller: 'portfolio', only: %i[index show create update destroy] do
+    member do
+      post :share
+    end
     # Portfolio의 프로젝트 조회/추가/수정/삭제
     resources :projects, controller: 'portfolio/project', only: %i[index create update destroy]
 
