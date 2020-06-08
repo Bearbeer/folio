@@ -25,6 +25,11 @@ Rails.application.routes.draw do
     member do
       post :share
     end
+
+    collection do
+      get :get_share, path: '/share/:code'
+    end
+
     # Portfolio의 프로젝트 조회/추가/수정/삭제
     resources :projects, controller: 'portfolio/project', only: %i[index create update destroy]
 

@@ -4,7 +4,7 @@
 class PortfolioController < ApiController
   include PortfolioHelper
 
-  before_action :validate_authorization
+  before_action :validate_authorization, only: %i[index show create update destroy share]
 
   # GET /portfolios
   def index
@@ -49,12 +49,21 @@ class PortfolioController < ApiController
     json(code: 200)
   end
 
-  # POST /portfolio/:id/share
+  # POST /portfolios/:id/share
   def share
     find_and_validate_portfolio
     code = @portfolio.share
 
     json(data: { code: code })
+  end
+
+  # GET /portfolios/share/:code
+  def get_share
+    params.require(:code)
+    portfolio = Portfolio::Entity.find_by(public_code: params[:code])
+    raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless portfolio
+
+    json(data: { portfolio: only_portfolio_view(portfolio)})
   end
 
   private
