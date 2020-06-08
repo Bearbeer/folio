@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     end
 
     collection do
-      get :get_share, path: '/share/:code'
+      get :show_share, path: '/share/:code'
     end
 
     # Portfolio의 프로젝트 조회/추가/수정/삭제

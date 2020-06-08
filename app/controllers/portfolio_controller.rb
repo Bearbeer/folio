@@ -10,7 +10,7 @@ class PortfolioController < ApiController
   def index
     portfolios = Portfolio::Entity.where(user: current_user).order(updated_at: :desc)
 
-    json(data: { portfolios: portfolios_view(portfolios)})
+    json(data: { portfolios: portfolios_view(portfolios) })
   end
 
   # GET /portfolios/:id
@@ -19,7 +19,7 @@ class PortfolioController < ApiController
     portfolio = Portfolio::Entity.find_by(user: current_user, id: params[:id])
     raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless portfolio
 
-    json(data: { portfolio: portfolio_view(portfolio)})
+    json(data: { portfolio: portfolio_view(portfolio) })
   end
 
   # POST /portfolios
@@ -27,7 +27,7 @@ class PortfolioController < ApiController
     params.require(:title)
     portfolio = Portfolio::Entity.create! attributes.merge(user: current_user)
 
-    json(data: { portfolio: portfolio_view(portfolio)})
+    json(data: { portfolio: portfolio_view(portfolio) })
   end
 
   # PUT /portfolios/:id
@@ -36,7 +36,7 @@ class PortfolioController < ApiController
     find_and_validate_portfolio
     update_portfolio
 
-    json(data: { portfolio: only_portfolio_view(@portfolio)})
+    json(data: { portfolio: only_portfolio_view(@portfolio) })
   end
 
   # DELETE /portfolios/:id
@@ -58,12 +58,12 @@ class PortfolioController < ApiController
   end
 
   # GET /portfolios/share/:code
-  def get_share
+  def show_share
     params.require(:code)
     portfolio = Portfolio::Entity.find_by(public_code: params[:code])
     raise Exceptions::NotFound, '포트폴리오가 존재하지 않습니다' unless portfolio
 
-    json(data: { portfolio: only_portfolio_view(portfolio)})
+    json(data: { portfolio: portfolio_view(portfolio) })
   end
 
   private
